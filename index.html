@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v11.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v12.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -182,7 +182,7 @@
         
         <div class="app-header">
             <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Admin Control Center | Automatic Block Match &amp; Portal Generator</p>
+            <p id="appHeaderSubtitle">Exact Excel Block Match System</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -300,7 +300,7 @@
 
             <!-- STEP 03: SUB-ENGINEERS REGISTRATION & LINK GENERATION -->
             <div class="card" id="step3Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Assigned Block (Select from Dropdown)</div>
+                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Assigned Block (Exact Excel Match)</div>
                 
                 <div style="display: grid; grid-template-columns: 1.2fr 1.2fr 1.5fr auto; gap: 8px; align-items: flex-end; margin-bottom: 10px;">
                     <div>
@@ -312,7 +312,7 @@
                         <input type="text" id="engMobile" class="input-text" placeholder="e.g. 9399332633">
                     </div>
                     <div>
-                        <label style="font-size: 11px; font-weight:600;">Assign Block (Select Dropdown):</label>
+                        <label style="font-size: 11px; font-weight:600;">Assign Block (Select Exact Excel Block):</label>
                         <select id="engBlockSelect" class="input-text" style="margin-top:5px;"></select>
                     </div>
                     <button class="btn btn-green" onclick="addSubEngineer()"><i class="fa-solid fa-user-plus"></i> Add Engineer</button>
@@ -397,13 +397,13 @@
     </div>
 
     <script>
-        // EXACT 5 PRE-FED SUB ENGINEERS
+        // Default Sub-Engineers List
         const DEFAULT_ENGINEERS = [
-            { name: "RAVI SINGH", mobile: "9399332633", block: "CHITRANGI" },
-            { name: "AMBIKA MISHRA", mobile: "9981215385", block: "CHITRANGI" },
-            { name: "SANJAY TAMRAKAR", mobile: "7000425030", block: "DEOSAR" },
-            { name: "RAKESH SHAH", mobile: "9926333689", block: "WAIDHAN" },
-            { name: "SHIV SHARAN SINGH", mobile: "8461932255", block: "WAIDHAN" }
+            { name: "RAVI SINGH", mobile: "9399332633", block: "चितरंगी" },
+            { name: "AMBIKA MISHRA", mobile: "9981215385", block: "चितरंगी" },
+            { name: "SANJAY TAMRAKAR", mobile: "7000425030", block: "देवसर" },
+            { name: "RAKESH SHAH", mobile: "9926333689", block: "बैढ़न" },
+            { name: "SHIV SHARAN SINGH", mobile: "8461932255", block: "बैढ़न" }
         ];
 
         let excelRowsData = [];
@@ -413,7 +413,6 @@
         let currentLoggedInEng = null;
         let selectedFontSize = 12;
 
-        // INIT Check Mode & Load Link Encoded Data
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const mode = urlParams.get('mode');
@@ -431,7 +430,7 @@
             }
         };
 
-        // Extract Block Name From Excel Row
+        // Exact Raw Text Pick from Excel Sheet (Without altering Uppercase/Lowercase)
         function extractBlockName(row) {
             for (let k in row) {
                 const lk = k.toLowerCase().trim();
@@ -510,7 +509,7 @@
             showStatus("✅ Columns Selected! Step 04 & 06 Ready.", "#4ade80");
         }
 
-        // POPULATE BLOCK DROPDOWNS (For Admin Filter & Sub-Engineer Assignment)
+        // POPULATE EXACT BLOCK DROPDOWNS FROM EXCEL
         function populateBlockDropdowns() {
             let uniqueBlocks = new Set();
             excelRowsData.forEach(r => {
@@ -518,15 +517,9 @@
                 if (b) uniqueBlocks.add(b);
             });
 
-            // Fallback default blocks if empty
-            if (uniqueBlocks.size === 0) {
-                uniqueBlocks.add("CHITRANGI");
-                uniqueBlocks.add("DEOSAR");
-                uniqueBlocks.add("WAIDHAN");
-            }
-
             const engSelect = document.getElementById("engBlockSelect");
             engSelect.innerHTML = "";
+
             uniqueBlocks.forEach(b => {
                 engSelect.innerHTML += `<option value="${b}">${b}</option>`;
             });
@@ -637,10 +630,6 @@
                 if (b) uniqueBlocks.add(b);
             });
 
-            registeredEngineers.forEach(e => {
-                if (e.block) uniqueBlocks.add(e.block.trim());
-            });
-
             uniqueBlocks.forEach(b => {
                 select.innerHTML += `<option value="${b}">${b}</option>`;
             });
@@ -653,7 +642,7 @@
 
             excelRowsData.forEach((row, idx) => {
                 const block = extractBlockName(row) || 'MAIN';
-                if (filter !== "ALL" && !block.toLowerCase().includes(filter.toLowerCase()) && !filter.toLowerCase().includes(block.toLowerCase())) return;
+                if (filter !== "ALL" && block.toLowerCase().trim() !== filter.toLowerCase().trim()) return;
 
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
                 const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
@@ -751,7 +740,7 @@
             }
         }
 
-        // NON-EMPTY GUARANTEED TABLE RENDERER FOR SUB ENGINEERS
+        // EXACT MATCH TABLE RENDERER FOR SUB ENGINEERS
         function renderEngineerPhotoUploadTable() {
             const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
@@ -764,9 +753,10 @@
             let renderedCount = 0;
 
             excelRowsData.forEach((row, idx) => {
-                const rowBlock = extractBlockName(row).toLowerCase();
+                const rowBlock = extractBlockName(row).toLowerCase().trim();
                 const engBlock = String(currentLoggedInEng.block).toLowerCase().trim();
 
+                // Exact / Contains Match
                 const isMatch = (rowBlock === engBlock) || (rowBlock.includes(engBlock)) || (engBlock.includes(rowBlock)) || (rowBlock === '');
 
                 if (currentLoggedInEng && !isMatch) {
@@ -848,7 +838,7 @@
 
             excelRowsData.forEach((row, idx) => {
                 const block = extractBlockName(row) || 'MAIN';
-                if (filter !== "ALL" && !block.toLowerCase().includes(filter.toLowerCase()) && !filter.toLowerCase().includes(block.toLowerCase())) return;
+                if (filter !== "ALL" && block.toLowerCase().trim() !== filter.toLowerCase().trim()) return;
 
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'];
                 const udise = row['udise_sch_code'] || row['UDISE Code'];
