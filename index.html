@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v3.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -181,7 +181,7 @@
     <div class="container">
         
         <div class="app-header">
-            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
+            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal (v3.0)</h1>
             <p id="appHeaderSubtitle">Admin Control Center | Data &amp; Photo Storage Managed Securely</p>
         </div>
 
@@ -396,7 +396,7 @@
     </div>
 
     <script>
-        // EXACT 5 SUB ENGINEERS LIST
+        // HARD-CODED EXACT 5 SUB ENGINEERS LIST
         const DEFAULT_ENGINEERS = [
             { name: "RAVI SINGH", mobile: "9399332633", block: "CHITRANGI" },
             { name: "AMBIKA MISHRA", mobile: "9981215385", block: "CHITRANGI" },
@@ -407,13 +407,19 @@
 
         let excelRowsData = [];
         let selectedColumns = [];
-        let registeredEngineers = [...DEFAULT_ENGINEERS];
+        let registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
         let rowPhotosMap = {}; 
         let currentLoggedInEng = null;
         let selectedFontSize = 12;
 
-        // INIT: Check Mode & Auto Clear Cache
+        // INIT: Check Mode & Auto Purge Old Cache
         window.onload = function() {
+            // Auto purge old cache if Rahul Verma exists in local memory
+            const savedPkg = localStorage.getItem("SCHOOL_PPT_DATA_PACKAGE");
+            if (savedPkg && savedPkg.includes("Rahul Verma")) {
+                localStorage.removeItem("SCHOOL_PPT_DATA_PACKAGE");
+            }
+
             const urlParams = new URLSearchParams(window.location.search);
             const mode = urlParams.get('mode');
 
@@ -427,8 +433,7 @@
                 document.getElementById("adminPanel").style.display = "block";
                 document.getElementById("engineerPortalPanel").style.display = "none";
                 
-                // Force sync default engineers list
-                registeredEngineers = [...DEFAULT_ENGINEERS];
+                registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
                 renderEngineerTable();
             }
         };
@@ -675,7 +680,7 @@
                 registeredEngineers = pkg.registeredEngineers && pkg.registeredEngineers.length > 0 ? pkg.registeredEngineers : DEFAULT_ENGINEERS;
                 rowPhotosMap = pkg.rowPhotosMap || {};
             } else {
-                registeredEngineers = [...DEFAULT_ENGINEERS];
+                registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
                 showStatus("⚠️ Admin dwara abhi tak Excel Data Save nahi kiya gaya hai!", "#f87171");
             }
         }
@@ -710,7 +715,6 @@
                 const rowBlock = String(row['block_name'] || row['जनपद'] || '').toUpperCase().trim();
                 const engBlock = String(currentLoggedInEng.block).toUpperCase().trim();
 
-                // Case-Insensitive Matching Fix
                 if (currentLoggedInEng && rowBlock !== engBlock) {
                     return;
                 }
