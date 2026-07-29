@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v6.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v7.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -181,7 +181,7 @@
     <div class="container">
         
         <div class="app-header">
-            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal (v6.0)</h1>
+            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
             <p id="appHeaderSubtitle">Admin Control Center | Data &amp; Photo Storage Managed Securely</p>
         </div>
 
@@ -208,7 +208,7 @@
             <div class="card" id="step2Card" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-list-check"></i> Step 02: Select Columns for Slide Details Box</div>
                 <div id="columnCheckboxes" class="column-grid"></div>
-                <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Font Size &amp; Theme Adjustment</button>
+                <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Adjust Font &amp; Live Preview</button>
             </div>
 
             <!-- STEP 04: THEME & FONT SIZE CONTROL + LIVE PREVIEW -->
@@ -239,7 +239,7 @@
                         <select id="adminBlockSelect" onchange="renderAdminPhotoTable()" style="padding: 6px; width: 220px; display: inline-block;"></select>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-blue" onclick="goToStep3()"><i class="fa-solid fa-users-gear"></i> Next: Register Sub-Engineers (Step 03)</button>
+                        <button class="btn btn-blue" onclick="goToStep3()"><i class="fa-solid fa-users-gear"></i> Next: Sub-Engineers Registration &amp; Link</button>
                         <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download Editable PPTX</button>
                         <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF</button>
                     </div>
@@ -298,9 +298,9 @@
                 </div>
             </div>
 
-            <!-- STEP 03: SUB-ENGINEERS REGISTRATION (Shifted before Step 7) -->
+            <!-- STEP 03: SUB-ENGINEERS REGISTRATION & SAVE -->
             <div class="card" id="step3Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Block Assignment</div>
+                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Save Data Package</div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: flex-end; margin-bottom: 10px;">
                     <div>
@@ -332,14 +332,15 @@
                     </table>
                 </div>
 
-                <div style="margin-top: 12px;">
-                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-floppy-disk"></i> Save Data &amp; Generate Sub-Engineer Link (Step 07)</button>
+                <div style="margin-top: 12px; display: flex; gap: 10px;">
+                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-floppy-disk"></i> 1. Save Data Package</button>
+                    <button class="btn btn-blue" onclick="goToStep7()"><i class="fa-solid fa-share-nodes"></i> 2. Generate Shareable Link (Step 07)</button>
                 </div>
             </div>
 
             <!-- STEP 07: GENERATE SHAREABLE LINK -->
             <div class="card" id="step7Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-share-nodes"></i> Step 07: Generate &amp; Share Photo Upload Link for Sub-Engineers</div>
+                <div class="step-title"><i class="fa-solid fa-share-nodes"></i> Step 07: Share Photo Upload Link with Sub-Engineers</div>
                 <p style="font-size: 12px; color: #94a3b8;">Is link ko Sub-Engineers ko share karein. Naye tab ya mobile me kholne par direct Sub-Engineer Login Screen khulegi.</p>
 
                 <div class="portal-link-box">
@@ -371,10 +372,16 @@
                 <div id="engLoginStatus" style="font-size: 12px; margin-top: 8px; font-weight: 600;"></div>
             </div>
 
-            <!-- SUB ENGINEER PHOTO ENTRY TABLE -->
+            <!-- SUB ENGINEER PHOTO ENTRY TABLE & EXCEL IMPORT FALLBACK -->
             <div class="card" id="engineerUploadCard" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-camera"></i> Photo Upload Entries for Assigned Block</div>
                 <div id="engWelcomeHeader" style="font-size: 13px; color: #38bdf8; margin-bottom: 10px; font-weight: 700;"></div>
+
+                <!-- Emergency Direct Excel Select Button for Sub-Engineer if LocalStorage is Empty -->
+                <div id="subEngExcelUploadNotice" style="display:none; background:#0f172a; padding:12px; border-radius:8px; border:1px dashed #f59e0b; margin-bottom:12px;">
+                    <span style="color:#f59e0b; font-size:12px; font-weight:600;"><i class="fa-solid fa-triangle-exclamation"></i> Device Sync Notice: Agar browser list nahi dikha raha ho, toh yahan Excel file dubara chun lein:</span>
+                    <input type="file" accept=".xlsx, .xls" onchange="processUploadedExcelInEngineerMode(event)" style="margin-top:6px; font-size:12px;">
+                </div>
 
                 <div class="table-container">
                     <table>
@@ -458,7 +465,6 @@
                 const data = new Uint8Array(evt.target.result);
                 const wb = XLSX.read(data, { type: 'array' });
 
-                // Process All Sheets inside Excel File
                 excelRowsData = [];
                 wb.SheetNames.forEach(sheetName => {
                     const ws = wb.Sheets[sheetName];
@@ -477,6 +483,32 @@
 
                 document.getElementById("step2Card").style.display = "block";
                 showStatus("✅ Excel Loaded Successfully! Step 02 me Columns Select Karein.", "#4ade80");
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function processUploadedExcelInEngineerMode(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const data = new Uint8Array(evt.target.result);
+                const wb = XLSX.read(data, { type: 'array' });
+
+                excelRowsData = [];
+                wb.SheetNames.forEach(sheetName => {
+                    const ws = wb.Sheets[sheetName];
+                    const sheetRows = XLSX.utils.sheet_to_json(ws);
+                    sheetRows.forEach(r => {
+                        if (!r['block_name'] && !r['जनपद']) {
+                            r['block_name'] = sheetName.toUpperCase().trim();
+                        }
+                        excelRowsData.push(r);
+                    });
+                });
+
+                renderEngineerPhotoUploadTable();
             };
             reader.readAsArrayBuffer(file);
         }
@@ -572,7 +604,7 @@
             document.getElementById("shareablePortalUrl").innerText = engineerPortalUrl;
             document.getElementById("step7Card").style.display = "block";
 
-            showStatus("🎉 Data Saved! Sub-Engineer Shareable Link Activated in Step 07.", "#4ade80");
+            showStatus("🎉 Data Saved Package Created! Shareable Link is Active in Step 07.", "#4ade80");
         }
 
         function copyShareablePortalLink() {
@@ -604,7 +636,11 @@
             document.getElementById("step3Card").style.display = "block";
         }
 
-        // STEP 05: Admin Live Table & Preview (Merging All Unique Blocks)
+        function goToStep7() {
+            document.getElementById("step7Card").style.display = "block";
+        }
+
+        // STEP 05: Admin Live Table & Preview
         function populateAdminBlockDropdown() {
             const select = document.getElementById("adminBlockSelect");
             select.innerHTML = `<option value="ALL">All Blocks Combined</option>`;
@@ -615,7 +651,6 @@
                 if (b) uniqueBlocks.add(b);
             });
 
-            // Also add blocks assigned to Sub-Engineers
             registeredEngineers.forEach(e => {
                 if (e.block) uniqueBlocks.add(e.block.toUpperCase().trim());
             });
@@ -706,7 +741,6 @@
                 rowPhotosMap = pkg.rowPhotosMap || {};
             } else {
                 registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
-                showStatus("⚠️ Notice: Admin dwara Save Data button nahi dabaya gaya tha.", "#f59e0b");
             }
         }
 
@@ -732,14 +766,16 @@
             }
         }
 
-        // GUARANTEED NON-EMPTY RENDERER FOR SUB ENGINEER
+        // NON-EMPTY GUARANTEED TABLE RENDERER
         function renderEngineerPhotoUploadTable() {
             const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
 
             if (excelRowsData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f87171; padding:20px;">Excel Data Available Nahi Hai! Admin dwara Step 03 me Save Data karwayein.</td></tr>`;
+                document.getElementById("subEngExcelUploadNotice").style.display = "block";
                 return;
+            } else {
+                document.getElementById("subEngExcelUploadNotice").style.display = "none";
             }
 
             let renderedCount = 0;
@@ -777,7 +813,7 @@
                 `;
             });
 
-            // GUARANTEED FALLBACK: Render all rows if 0 match
+            // GUARANTEED FALLBACK
             if (renderedCount === 0) {
                 excelRowsData.forEach((row, idx) => {
                     const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
