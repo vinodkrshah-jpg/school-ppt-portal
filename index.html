@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v7.0</title>
+    <title>School Repair &amp; Dilapidated PPT Cloud Portal v9.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,11 +11,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- PptxGenJS, SheetJS & html2canvas + jsPDF -->
+    <!-- PptxGenJS, SheetJS, html2canvas, jsPDF & Firebase Cloud Database -->
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -181,8 +183,8 @@
     <div class="container">
         
         <div class="app-header">
-            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Admin Control Center | Data &amp; Photo Storage Managed Securely</p>
+            <h1 id="appHeaderTitle"><i class="fa-solid fa-cloud-arrow-up"></i> Master School PPT &amp; PDF Portal</h1>
+            <p id="appHeaderSubtitle">Admin Control Center | Realtime Cloud Database Connected</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -239,7 +241,7 @@
                         <select id="adminBlockSelect" onchange="renderAdminPhotoTable()" style="padding: 6px; width: 220px; display: inline-block;"></select>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-blue" onclick="goToStep3()"><i class="fa-solid fa-users-gear"></i> Next: Sub-Engineers Registration &amp; Link</button>
+                        <button class="btn btn-blue" onclick="goToStep3()"><i class="fa-solid fa-users-gear"></i> Next: Sub-Engineers Registration &amp; Cloud Sync</button>
                         <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download Editable PPTX</button>
                         <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF</button>
                     </div>
@@ -298,9 +300,9 @@
                 </div>
             </div>
 
-            <!-- STEP 03: SUB-ENGINEERS REGISTRATION & SAVE -->
+            <!-- STEP 03: SUB-ENGINEERS REGISTRATION & CLOUD SYNC -->
             <div class="card" id="step3Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Save Data Package</div>
+                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Cloud Sync</div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: flex-end; margin-bottom: 10px;">
                     <div>
@@ -333,15 +335,15 @@
                 </div>
 
                 <div style="margin-top: 12px; display: flex; gap: 10px;">
-                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-floppy-disk"></i> 1. Save Data Package</button>
-                    <button class="btn btn-blue" onclick="goToStep7()"><i class="fa-solid fa-share-nodes"></i> 2. Generate Shareable Link (Step 07)</button>
+                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-cloud-arrow-up"></i> 1. Save &amp; Upload Data to Cloud Database</button>
+                    <button class="btn btn-blue" onclick="goToStep7()"><i class="fa-solid fa-share-nodes"></i> 2. Get Shareable Link (Step 07)</button>
                 </div>
             </div>
 
             <!-- STEP 07: GENERATE SHAREABLE LINK -->
             <div class="card" id="step7Card" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-share-nodes"></i> Step 07: Share Photo Upload Link with Sub-Engineers</div>
-                <p style="font-size: 12px; color: #94a3b8;">Is link ko Sub-Engineers ko share karein. Naye tab ya mobile me kholne par direct Sub-Engineer Login Screen khulegi.</p>
+                <p style="font-size: 12px; color: #94a3b8;">Is link ko Sub-Engineers ko share karein. Google Cloud Sync ke dwara list **kisi bhi browser/mobile par direct** khulegi.</p>
 
                 <div class="portal-link-box">
                     <div>
@@ -372,16 +374,10 @@
                 <div id="engLoginStatus" style="font-size: 12px; margin-top: 8px; font-weight: 600;"></div>
             </div>
 
-            <!-- SUB ENGINEER PHOTO ENTRY TABLE & EXCEL IMPORT FALLBACK -->
+            <!-- SUB ENGINEER PHOTO ENTRY TABLE -->
             <div class="card" id="engineerUploadCard" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-camera"></i> Photo Upload Entries for Assigned Block</div>
                 <div id="engWelcomeHeader" style="font-size: 13px; color: #38bdf8; margin-bottom: 10px; font-weight: 700;"></div>
-
-                <!-- Emergency Direct Excel Select Button for Sub-Engineer if LocalStorage is Empty -->
-                <div id="subEngExcelUploadNotice" style="display:none; background:#0f172a; padding:12px; border-radius:8px; border:1px dashed #f59e0b; margin-bottom:12px;">
-                    <span style="color:#f59e0b; font-size:12px; font-weight:600;"><i class="fa-solid fa-triangle-exclamation"></i> Device Sync Notice: Agar browser list nahi dikha raha ho, toh yahan Excel file dubara chun lein:</span>
-                    <input type="file" accept=".xlsx, .xls" onchange="processUploadedExcelInEngineerMode(event)" style="margin-top:6px; font-size:12px;">
-                </div>
 
                 <div class="table-container">
                     <table>
@@ -403,6 +399,13 @@
     </div>
 
     <script>
+        // FIREBASE REALTIME CLOUD DB CONFIGURATION
+        const firebaseConfig = {
+            databaseURL: "https://school-ppt-portal-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const cloudDb = firebase.database();
+
         // EXACT 5 PRE-FED SUB ENGINEERS
         const DEFAULT_ENGINEERS = [
             { name: "RAVI SINGH", mobile: "9399332633", block: "CHITRANGI" },
@@ -419,13 +422,8 @@
         let currentLoggedInEng = null;
         let selectedFontSize = 12;
 
-        // INIT Check Mode & Clean LocalStorage
+        // INIT Check Mode & Load Data
         window.onload = function() {
-            const savedPkg = localStorage.getItem("SCHOOL_PPT_DATA_PACKAGE");
-            if (savedPkg && savedPkg.includes("Rahul Verma")) {
-                localStorage.removeItem("SCHOOL_PPT_DATA_PACKAGE");
-            }
-
             const urlParams = new URLSearchParams(window.location.search);
             const mode = urlParams.get('mode');
 
@@ -434,7 +432,9 @@
                 document.getElementById("engineerPortalPanel").style.display = "block";
                 document.getElementById("appHeaderTitle").innerHTML = `<i class="fa-solid fa-camera"></i> Sub-Engineer Photo Entry Portal`;
                 document.getElementById("appHeaderSubtitle").innerText = `Upload Site Photos for Assigned Schools`;
-                loadDataFromLocalStorage();
+                
+                // Fetch cloud data automatically
+                syncFromCloudDb();
             } else {
                 document.getElementById("adminPanel").style.display = "block";
                 document.getElementById("engineerPortalPanel").style.display = "none";
@@ -483,32 +483,6 @@
 
                 document.getElementById("step2Card").style.display = "block";
                 showStatus("✅ Excel Loaded Successfully! Step 02 me Columns Select Karein.", "#4ade80");
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        function processUploadedExcelInEngineerMode(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                const data = new Uint8Array(evt.target.result);
-                const wb = XLSX.read(data, { type: 'array' });
-
-                excelRowsData = [];
-                wb.SheetNames.forEach(sheetName => {
-                    const ws = wb.Sheets[sheetName];
-                    const sheetRows = XLSX.utils.sheet_to_json(ws);
-                    sheetRows.forEach(r => {
-                        if (!r['block_name'] && !r['जनपद']) {
-                            r['block_name'] = sheetName.toUpperCase().trim();
-                        }
-                        excelRowsData.push(r);
-                    });
-                });
-
-                renderEngineerPhotoUploadTable();
             };
             reader.readAsArrayBuffer(file);
         }
@@ -585,26 +559,29 @@
             renderEngineerTable();
         }
 
-        // SAVE DATA TO LOCAL STORAGE
+        // SAVE DATA PACKAGE TO CLOUD DATABASE (FIREBASE)
         function saveAdminDataAndEnablePortal() {
+            showStatus("Uploading Excel Data Package to Google Cloud DB...", "#38bdf8");
+
             const adminDataPackage = {
                 excelRowsData: excelRowsData,
                 selectedColumns: selectedColumns,
                 registeredEngineers: registeredEngineers,
                 pptWorkTitle: document.getElementById("pptWorkTitle").value,
-                rowPhotosMap: rowPhotosMap,
                 selectedFontSize: selectedFontSize
             };
 
-            localStorage.setItem("SCHOOL_PPT_DATA_PACKAGE", JSON.stringify(adminDataPackage));
+            cloudDb.ref('MASTER_PPT_DATA').set(adminDataPackage).then(() => {
+                const baseUrl = window.location.href.split('?')[0];
+                const engineerPortalUrl = `${baseUrl}?mode=engineer`;
 
-            const baseUrl = window.location.href.split('?')[0];
-            const engineerPortalUrl = `${baseUrl}?mode=engineer`;
+                document.getElementById("shareablePortalUrl").innerText = engineerPortalUrl;
+                document.getElementById("step7Card").style.display = "block";
 
-            document.getElementById("shareablePortalUrl").innerText = engineerPortalUrl;
-            document.getElementById("step7Card").style.display = "block";
-
-            showStatus("🎉 Data Saved Package Created! Shareable Link is Active in Step 07.", "#4ade80");
+                showStatus("🎉 Excel Data Successfully Uploaded to Cloud! Any device can now load lists.", "#4ade80");
+            }).catch(err => {
+                showStatus("Cloud Save Error: " + err.message, "#f87171");
+            });
         }
 
         function copyShareablePortalLink() {
@@ -708,7 +685,8 @@
                     pvBox.innerText = "";
                 }
 
-                syncDataToLocalStorage();
+                // Sync photo to cloud
+                cloudDb.ref(`PHOTOS/${idx}/${photoType}`).set(evt.target.result);
             };
             reader.readAsDataURL(file);
         }
@@ -730,23 +708,32 @@
         }
 
 
-        // ================= SUB ENGINEER PORTAL LOGIC =================
-        function loadDataFromLocalStorage() {
-            const savedPkg = localStorage.getItem("SCHOOL_PPT_DATA_PACKAGE");
-            if (savedPkg) {
-                const pkg = JSON.parse(savedPkg);
-                excelRowsData = pkg.excelRowsData || [];
-                selectedColumns = pkg.selectedColumns || [];
-                registeredEngineers = pkg.registeredEngineers && pkg.registeredEngineers.length > 0 ? pkg.registeredEngineers : DEFAULT_ENGINEERS;
-                rowPhotosMap = pkg.rowPhotosMap || {};
-            } else {
-                registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
-            }
+        // ================= SUB ENGINEER PORTAL LOGIC (CLOUD POWERED) =================
+        function syncFromCloudDb() {
+            showStatus("Connecting to Google Cloud DB...", "#38bdf8");
+            cloudDb.ref('MASTER_PPT_DATA').once('value', snapshot => {
+                const pkg = snapshot.val();
+                if (pkg) {
+                    excelRowsData = pkg.excelRowsData || [];
+                    selectedColumns = pkg.selectedColumns || [];
+                    registeredEngineers = pkg.registeredEngineers || DEFAULT_ENGINEERS;
+                    showStatus("✅ Cloud Connected! Enter Mobile Number to Login.", "#4ade80");
+                } else {
+                    showStatus("⚠️ Notice: Admin ne abhi tak Cloud par Save Data nahi kiya hai.", "#f59e0b");
+                }
+            });
+
+            // Sync photos from cloud
+            cloudDb.ref('PHOTOS').on('value', snapshot => {
+                const pData = snapshot.val();
+                if (pData) {
+                    rowPhotosMap = pData;
+                }
+            });
         }
 
         function subEngineerLogin() {
             const mob = document.getElementById("engLoginMobile").value.trim();
-            loadDataFromLocalStorage();
 
             const eng = registeredEngineers.find(e => String(e.mobile).trim() === mob);
             const statusDiv = document.getElementById("engLoginStatus");
@@ -766,16 +753,13 @@
             }
         }
 
-        // NON-EMPTY GUARANTEED TABLE RENDERER
         function renderEngineerPhotoUploadTable() {
             const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
 
             if (excelRowsData.length === 0) {
-                document.getElementById("subEngExcelUploadNotice").style.display = "block";
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f87171; padding:20px;">Cloud par Data Upload nahi mila! Admin dwara Step 03 me 'Save Data' dabwayein.</td></tr>`;
                 return;
-            } else {
-                document.getElementById("subEngExcelUploadNotice").style.display = "none";
             }
 
             let renderedCount = 0;
@@ -814,7 +798,7 @@
             });
 
             // GUARANTEED FALLBACK
-            if (renderedCount === 0) {
+            if (renderedCount === 0 && excelRowsData.length > 0) {
                 excelRowsData.forEach((row, idx) => {
                     const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
                     const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
@@ -848,18 +832,11 @@
             reader.onload = function(evt) {
                 rowPhotosMap[idx][photoType] = evt.target.result;
                 document.getElementById(`eng_${photoType === 'photo1' ? 'p1' : 'p2'}_thumb_${idx}`).innerHTML = `<img src="${evt.target.result}" class="img-thumb">`;
-                syncDataToLocalStorage();
+                
+                // Upload photo direct to Cloud
+                cloudDb.ref(`PHOTOS/${idx}/${photoType}`).set(evt.target.result);
             };
             reader.readAsDataURL(file);
-        }
-
-        function syncDataToLocalStorage() {
-            const savedPkg = localStorage.getItem("SCHOOL_PPT_DATA_PACKAGE");
-            if (savedPkg) {
-                let pkg = JSON.parse(savedPkg);
-                pkg.rowPhotosMap = rowPhotosMap;
-                localStorage.setItem("SCHOOL_PPT_DATA_PACKAGE", JSON.stringify(pkg));
-            }
         }
 
         // EXPORT PPTX
