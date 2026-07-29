@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- PptxGenJS, SheetJS & html2canvas + jsPDF (For Working PDF) -->
+    <!-- PptxGenJS, SheetJS & html2canvas + jsPDF -->
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -135,7 +135,6 @@
 
         .img-thumb { width: 45px; height: 38px; object-fit: cover; border-radius: 4px; border: 1px solid #38bdf8; vertical-align: middle; margin-left: 5px; }
 
-        /* Preview Sheet Box */
         .preview-box {
             width: 100%;
             background-color: #ffffff;
@@ -212,7 +211,7 @@
                 <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Register Sub-Engineers</button>
             </div>
 
-            <!-- STEP 03: SUB-ENGINEERS REGISTRATION (With Pre-fed Data) -->
+            <!-- STEP 03: SUB-ENGINEERS REGISTRATION -->
             <div class="card" id="step3Card" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Block Assignment</div>
                 
@@ -401,7 +400,7 @@
         let excelRowsData = [];
         let selectedColumns = [];
         
-        // Requirement #13: Pre-fed Sub Engineers List
+        // Exact 5 Pre-fed Sub Engineers List
         let registeredEngineers = [
             { name: "RAVI SINGH", mobile: "9399332633", block: "CHITRANGI" },
             { name: "AMBIKA MISHRA", mobile: "9981215385", block: "CHITRANGI" },
@@ -491,9 +490,9 @@
 
         // STEP 03: Register Engineers
         function addSubEngineer() {
-            const name = document.getElementById("engName").value.trim();
+            const name = document.getElementById("engName").value.trim().toUpperCase();
             const mobile = document.getElementById("engMobile").value.trim();
-            const block = document.getElementById("engBlock").value.trim();
+            const block = document.getElementById("engBlock").value.trim().toUpperCase();
 
             if (!name || !mobile || !block) {
                 alert("Teeno fields bharein!");
@@ -591,7 +590,7 @@
             const select = document.getElementById("adminBlockSelect");
             select.innerHTML = `<option value="ALL">All Blocks Combined</option>`;
 
-            const blocks = [...new Set(excelRowsData.map(r => r['block_name'] || r['जनपद'] || 'Main'))];
+            const blocks = [...new Set(excelRowsData.map(r => String(r['block_name'] || r['जनपद'] || 'Main').toUpperCase()))];
             blocks.forEach(b => {
                 select.innerHTML += `<option value="${b}">${b}</option>`;
             });
@@ -603,7 +602,7 @@
             tbody.innerHTML = "";
 
             excelRowsData.forEach((row, idx) => {
-                const block = row['block_name'] || row['जनपद'] || 'Main';
+                const block = String(row['block_name'] || row['जनपद'] || 'Main').toUpperCase();
                 if (filter !== "ALL" && block !== filter) return;
 
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
@@ -685,6 +684,7 @@
             const mob = document.getElementById("engLoginMobile").value.trim();
             loadDataFromLocalStorage();
 
+            // Case-Insensitive Matching
             const eng = registeredEngineers.find(e => String(e.mobile).trim() === mob);
             const statusDiv = document.getElementById("engLoginStatus");
 
@@ -703,13 +703,17 @@
             }
         }
 
+        // Case-Insensitive Filter for Sub Engineer Block Matching
         function renderEngineerPhotoUploadTable() {
             const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
 
             excelRowsData.forEach((row, idx) => {
-                const block = row['block_name'] || row['जनपद'] || '';
-                if (currentLoggedInEng && String(block).toLowerCase().trim() !== String(currentLoggedInEng.block).toLowerCase().trim()) {
+                const rowBlock = String(row['block_name'] || row['जनपद'] || '').toUpperCase().trim();
+                const engBlock = String(currentLoggedInEng.block).toUpperCase().trim();
+
+                // Case-Insensitive Matching
+                if (currentLoggedInEng && rowBlock !== engBlock) {
                     return;
                 }
 
@@ -770,7 +774,7 @@
             pptx.layout = 'A4_LANDSCAPE';
 
             excelRowsData.forEach((row, idx) => {
-                const block = row['block_name'] || row['जनपद'] || 'Main';
+                const block = String(row['block_name'] || row['जनपद'] || 'Main').toUpperCase();
                 if (filter !== "ALL" && block !== filter) return;
 
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'];
