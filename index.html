@@ -14,6 +14,7 @@
     <!-- PptxGenJS, SheetJS & html2pdf.js -->
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -247,26 +248,15 @@
                 </div>
             </div>
 
-            <!-- STEP 04: GENERATE LINK FOR SUB ENGINEERS -->
+            <!-- STEP 04: THEME & LIVE PREVIEW -->
             <div class="card" id="step4Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-share-nodes"></i> Step 04: Share Photo Portal Link with Sub-Engineers</div>
-                <p style="font-size: 12px; color: #94a3b8;">Is Link ko copy karke WhatsApp par Sub-Engineers ko bhej dein. Sub-Engineers apne feeded mobile number se login karke photo upload entry karenge.</p>
-
-                <div class="portal-link-box">
-                    <div>
-                        <strong style="color: #38bdf8;"><i class="fa-solid fa-link"></i> Sub-Engineer Photo Portal Link:</strong>
-                        <div id="shareablePortalUrl" style="font-family: monospace; font-size: 12px; color: #4ade80; margin-top: 4px;">...</div>
-                    </div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn btn-amber" onclick="copyShareablePortalLink()"><i class="fa-solid fa-copy"></i> Copy Link</button>
-                        <button class="btn btn-blue" onclick="openShareablePortalLink()"><i class="fa-solid fa-arrow-up-right-from-square"></i> Test Link</button>
-                    </div>
-                </div>
+                <div class="step-title"><i class="fa-solid fa-palette"></i> Step 04: Select Color Theme &amp; Live Preview</div>
+                <button class="btn btn-blue" onclick="goToStep5()"><i class="fa-solid fa-arrow-right"></i> Next: Select Block Filter &amp; Photo Table</button>
             </div>
 
             <!-- STEP 05: ADMIN DIRECT ENTRY & EXPORT PPT/PDF -->
             <div class="card" id="step5Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-table-list"></i> Step 05: Admin Live Photo Table &amp; Final PPTX/PDF Export</div>
+                <div class="step-title"><i class="fa-solid fa-table-list"></i> Step 06: Admin Live Photo Table &amp; Final PPTX/PDF Export</div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <div>
@@ -274,6 +264,7 @@
                         <select id="adminBlockSelect" onchange="renderAdminPhotoTable()" style="padding: 6px; width: 200px; display: inline-block;"></select>
                     </div>
                     <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-blue" onclick="goToStep7()"><i class="fa-solid fa-share-nodes"></i> Next: Sub-Engineer Link Generator (Step 07)</button>
                         <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download Editable PPTX</button>
                         <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
                     </div>
@@ -332,6 +323,23 @@
                 </div>
             </div>
 
+            <!-- STEP 07: GENERATE SHAREABLE LINK -->
+            <div class="card" id="step7Card" style="display: none;">
+                <div class="step-title"><i class="fa-solid fa-share-nodes"></i> Step 07: Generate &amp; Share Photo Upload Link for Sub-Engineers</div>
+                <p style="font-size: 12px; color: #94a3b8;">Is link ko copy karke Sub-Engineers ko bhej dein. Naye tab ya mobile me kholne par direct Sub-Engineer Login Screen khulegi.</p>
+
+                <div class="portal-link-box">
+                    <div>
+                        <strong style="color: #38bdf8;"><i class="fa-solid fa-link"></i> Sub-Engineer Direct Entry Link:</strong>
+                        <div id="shareablePortalUrl" style="font-family: monospace; font-size: 12px; color: #4ade80; margin-top: 4px;">...</div>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn btn-amber" onclick="copyShareablePortalLink()"><i class="fa-solid fa-copy"></i> Copy Link</button>
+                        <button class="btn btn-blue" onclick="openShareablePortalLink()"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open in New Tab</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
 
@@ -381,7 +389,7 @@
             { name: "Rahul Verma", mobile: "9876543210", block: "Chitrangi" },
             { name: "Amit Sharma", mobile: "9123456789", block: "Deosar" }
         ];
-        let rowPhotosMap = {}; // Key: rowIndex -> { photo1, photo2 }
+        let rowPhotosMap = {}; 
         let currentLoggedInEng = null;
 
         // INIT: Check Mode (Admin vs Engineer)
@@ -390,7 +398,7 @@
             const mode = urlParams.get('mode');
 
             if (mode === 'engineer') {
-                // SUB-ENGINEER MODE
+                // SUB-ENGINEER MODE (DIRECT OPEN)
                 document.getElementById("adminPanel").style.display = "none";
                 document.getElementById("engineerPortalPanel").style.display = "block";
                 document.getElementById("appHeaderTitle").innerHTML = `<i class="fa-solid fa-camera"></i> Sub-Engineer Photo Entry Portal`;
@@ -497,7 +505,7 @@
             renderEngineerTable();
         }
 
-        // SAVE DATA TO LOCAL STORAGE & ACTIVATE LINK
+        // SAVE DATA TO LOCAL STORAGE & ACTIVATE SUB ENGINEER LINK WITH PARAMETER
         function saveAdminDataAndEnablePortal() {
             const adminDataPackage = {
                 excelRowsData: excelRowsData,
@@ -509,30 +517,39 @@
 
             localStorage.setItem("SCHOOL_PPT_DATA_PACKAGE", JSON.stringify(adminDataPackage));
 
-            // Generate Working Portal Link with query parameter mode=engineer
+            // Generate Working Portal Link with mode=engineer parameter
             const baseUrl = window.location.href.split('?')[0];
             const engineerPortalUrl = `${baseUrl}?mode=engineer`;
 
             document.getElementById("shareablePortalUrl").innerText = engineerPortalUrl;
             document.getElementById("step4Card").style.display = "block";
             document.getElementById("step5Card").style.display = "block";
+            document.getElementById("step7Card").style.display = "block";
 
             populateAdminBlockDropdown();
             renderAdminPhotoTable();
             updatePreviewSheet();
 
-            showStatus("🎉 Data Saved! Sub-Engineer Shareable Link is Active.", "#4ade80");
+            showStatus("🎉 Data Saved! Sub-Engineer Shareable Link Activated.", "#4ade80");
         }
 
         function copyShareablePortalLink() {
             const linkText = document.getElementById("shareablePortalUrl").innerText;
             navigator.clipboard.writeText(linkText);
-            alert("Sub-Engineer Photo Portal Link Copied!");
+            alert("Sub-Engineer Portal Link Copied!");
         }
 
         function openShareablePortalLink() {
             const linkText = document.getElementById("shareablePortalUrl").innerText;
             window.open(linkText, '_blank');
+        }
+
+        function goToStep5() {
+            document.getElementById("step5Card").style.display = "block";
+        }
+
+        function goToStep7() {
+            document.getElementById("step7Card").style.display = "block";
         }
 
         // STEP 05: Admin Live Table & Preview
@@ -651,7 +668,6 @@
 
             excelRowsData.forEach((row, idx) => {
                 const block = row['block_name'] || row['जनपद'] || '';
-                // Show rows matching Sub-Engineer's Assigned Block
                 if (currentLoggedInEng && String(block).toLowerCase().trim() !== String(currentLoggedInEng.block).toLowerCase().trim()) {
                     return;
                 }
