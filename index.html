@@ -11,10 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- PptxGenJS, SheetJS & html2pdf.js -->
+    <!-- PptxGenJS, SheetJS & html2canvas + jsPDF (For Working PDF) -->
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -134,6 +135,7 @@
 
         .img-thumb { width: 45px; height: 38px; object-fit: cover; border-radius: 4px; border: 1px solid #38bdf8; vertical-align: middle; margin-left: 5px; }
 
+        /* Preview Sheet Box */
         .preview-box {
             width: 100%;
             background-color: #ffffff;
@@ -147,6 +149,7 @@
             overflow: hidden;
             border: 2px solid #38bdf8;
             margin-top: 10px;
+            box-sizing: border-box;
         }
 
         .portal-link-box {
@@ -209,22 +212,22 @@
                 <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Register Sub-Engineers</button>
             </div>
 
-            <!-- STEP 03: SUB-ENGINEERS REGISTRATION -->
+            <!-- STEP 03: SUB-ENGINEERS REGISTRATION (With Pre-fed Data) -->
             <div class="card" id="step3Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Register Authorized Sub-Engineers &amp; Assign Blocks</div>
+                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Block Assignment</div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: flex-end; margin-bottom: 10px;">
                     <div>
                         <label style="font-size: 11px;">Sub-Engineer Name:</label>
-                        <input type="text" id="engName" class="input-text" placeholder="e.g. Rahul Verma">
+                        <input type="text" id="engName" class="input-text" placeholder="e.g. RAVI SINGH">
                     </div>
                     <div>
                         <label style="font-size: 11px;">Mobile Number (10-Digit):</label>
-                        <input type="text" id="engMobile" class="input-text" placeholder="e.g. 9876543210">
+                        <input type="text" id="engMobile" class="input-text" placeholder="e.g. 9399332633">
                     </div>
                     <div>
                         <label style="font-size: 11px;">Assigned Block Name:</label>
-                        <input type="text" id="engBlock" class="input-text" placeholder="e.g. Chitrangi">
+                        <input type="text" id="engBlock" class="input-text" placeholder="e.g. CHITRANGI">
                     </div>
                     <button class="btn btn-green" onclick="addSubEngineer()"><i class="fa-solid fa-user-plus"></i> Add</button>
                 </div>
@@ -248,9 +251,21 @@
                 </div>
             </div>
 
-            <!-- STEP 04: THEME & LIVE PREVIEW -->
+            <!-- STEP 04: THEME & FONT SIZE CONTROL + LIVE PREVIEW -->
             <div class="card" id="step4Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-palette"></i> Step 04: Select Color Theme &amp; Live Preview</div>
+                <div class="step-title"><i class="fa-solid fa-sliders"></i> Step 04: Font Size &amp; Theme Adjustment + Live Preview</div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
+                    <div>
+                        <label style="font-size: 12px; font-weight: 600;">Details Text Font Size (Current: <span id="fontVal">12</span>pt):</label>
+                        <input type="range" id="fontSizeSlider" min="9" max="20" value="12" oninput="adjustFontSize(this.value)" style="width:100%; margin-top:5px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: 600;">Line Spacing / Gap:</label>
+                        <input type="range" id="lineHeightSlider" min="1.1" max="2.2" step="0.1" value="1.4" oninput="adjustLineHeight(this.value)" style="width:100%; margin-top:5px;">
+                    </div>
+                </div>
+
                 <button class="btn btn-blue" onclick="goToStep5()"><i class="fa-solid fa-arrow-right"></i> Next: Select Block Filter &amp; Photo Table</button>
             </div>
 
@@ -266,7 +281,7 @@
                     <div style="display: flex; gap: 8px;">
                         <button class="btn btn-blue" onclick="goToStep7()"><i class="fa-solid fa-share-nodes"></i> Next: Sub-Engineer Link Generator (Step 07)</button>
                         <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download Editable PPTX</button>
-                        <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+                        <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF</button>
                     </div>
                 </div>
 
@@ -308,14 +323,14 @@
                     <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 12px; flex-grow: 1;">
                         <div id="pvDetailsCard" style="background: rgba(248, 250, 252, 0.95); border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; justify-content: space-around;">
                             <div style="font-size: 12px; font-weight: 800; color: #1e3a8a; border-bottom: 1.5px solid #2563eb; padding-bottom: 2px; margin-bottom: 4px;">📋 SCHOOL DETAILS</div>
-                            <div id="pvDetailsFields" style="font-size: 11px; line-height: 1.5;"></div>
+                            <div id="pvDetailsFields" style="font-size: 12px; line-height: 1.4;"></div>
                         </div>
 
                         <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <div id="pvPhoto1Box" style="flex: 1; background: rgba(241, 245, 249, 0.9); border: 1.5px dashed #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #475569;">
+                            <div id="pvPhoto1Box" style="flex: 1; background: rgba(241, 245, 249, 0.9); border: 1.5px dashed #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #475569; background-size: cover; background-position: center;">
                                 📷 Photo 1 Slot
                             </div>
-                            <div id="pvPhoto2Box" style="flex: 1; background: rgba(241, 245, 249, 0.9); border: 1.5px dashed #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #475569;">
+                            <div id="pvPhoto2Box" style="flex: 1; background: rgba(241, 245, 249, 0.9); border: 1.5px dashed #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #475569; background-size: cover; background-position: center;">
                                 🔧 Photo 2 Slot
                             </div>
                         </div>
@@ -326,7 +341,7 @@
             <!-- STEP 07: GENERATE SHAREABLE LINK -->
             <div class="card" id="step7Card" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-share-nodes"></i> Step 07: Generate &amp; Share Photo Upload Link for Sub-Engineers</div>
-                <p style="font-size: 12px; color: #94a3b8;">Is link ko copy karke Sub-Engineers ko bhej dein. Naye tab ya mobile me kholne par direct Sub-Engineer Login Screen khulegi.</p>
+                <p style="font-size: 12px; color: #94a3b8;">Is link ko Sub-Engineers ko share karein. Naye tab ya mobile me kholne par direct Sub-Engineer Login Screen khulegi.</p>
 
                 <div class="portal-link-box">
                     <div>
@@ -385,12 +400,19 @@
         // GLOBAL DATA VARIABLES
         let excelRowsData = [];
         let selectedColumns = [];
+        
+        // Requirement #13: Pre-fed Sub Engineers List
         let registeredEngineers = [
-            { name: "Rahul Verma", mobile: "9876543210", block: "Chitrangi" },
-            { name: "Amit Sharma", mobile: "9123456789", block: "Deosar" }
+            { name: "RAVI SINGH", mobile: "9399332633", block: "CHITRANGI" },
+            { name: "AMBIKA MISHRA", mobile: "9981215385", block: "CHITRANGI" },
+            { name: "SANJAY TAMRAKAR", mobile: "7000425030", block: "DEOSAR" },
+            { name: "RAKESH SHAH", mobile: "9926333689", block: "WAIDHAN" },
+            { name: "SHIV SHARAN SINGH", mobile: "8461932255", block: "WAIDHAN" }
         ];
+        
         let rowPhotosMap = {}; 
         let currentLoggedInEng = null;
+        let selectedFontSize = 12;
 
         // INIT: Check Mode (Admin vs Engineer)
         window.onload = function() {
@@ -408,6 +430,7 @@
                 // ADMIN MODE
                 document.getElementById("adminPanel").style.display = "block";
                 document.getElementById("engineerPortalPanel").style.display = "none";
+                renderEngineerTable();
             }
         };
 
@@ -512,7 +535,8 @@
                 selectedColumns: selectedColumns,
                 registeredEngineers: registeredEngineers,
                 pptWorkTitle: document.getElementById("pptWorkTitle").value,
-                rowPhotosMap: rowPhotosMap
+                rowPhotosMap: rowPhotosMap,
+                selectedFontSize: selectedFontSize
             };
 
             localStorage.setItem("SCHOOL_PPT_DATA_PACKAGE", JSON.stringify(adminDataPackage));
@@ -542,6 +566,16 @@
         function openShareablePortalLink() {
             const linkText = document.getElementById("shareablePortalUrl").innerText;
             window.open(linkText, '_blank');
+        }
+
+        function adjustFontSize(val) {
+            selectedFontSize = val;
+            document.getElementById("fontVal").innerText = val;
+            document.getElementById("pvDetailsFields").style.fontSize = `${val}pt`;
+        }
+
+        function adjustLineHeight(val) {
+            document.getElementById("pvDetailsFields").style.lineHeight = val;
         }
 
         function goToStep5() {
@@ -604,6 +638,13 @@
             reader.onload = function(evt) {
                 rowPhotosMap[idx][photoType] = evt.target.result;
                 document.getElementById(`admin_${photoType === 'photo1' ? 'p1' : 'p2'}_thumb_${idx}`).innerHTML = `<img src="${evt.target.result}" class="img-thumb">`;
+                
+                if (idx === 0) {
+                    const pvBox = document.getElementById(photoType === 'photo1' ? 'pvPhoto1Box' : 'pvPhoto2Box');
+                    pvBox.style.backgroundImage = `url('${evt.target.result}')`;
+                    pvBox.innerText = "";
+                }
+
                 syncDataToLocalStorage();
             };
             reader.readAsDataURL(file);
@@ -633,7 +674,7 @@
                 const pkg = JSON.parse(savedPkg);
                 excelRowsData = pkg.excelRowsData || [];
                 selectedColumns = pkg.selectedColumns || [];
-                registeredEngineers = pkg.registeredEngineers || [];
+                registeredEngineers = pkg.registeredEngineers || registeredEngineers;
                 rowPhotosMap = pkg.rowPhotosMap || {};
             } else {
                 showStatus("⚠️ Admin dwara abhi tak Excel Data Save nahi kiya gaya hai!", "#f87171");
@@ -748,7 +789,7 @@
                 slide.addText(String(schName || ''), { x: 0.5, y: 0.7, w: 4.8, h: 0.4, fontSize: 16, bold: true, color: "FFFFFF", autoFit: true });
                 slide.addText("UDISE Code: " + String(udise || ''), { x: 0.5, y: 1.1, w: 4.8, h: 0.3, fontSize: 11, bold: true, color: "CBD5E1" });
 
-                // Details Card
+                // Details Card (Dynamic Font Size)
                 slide.addShape(pptx.ShapeType.roundRect, { x: 0.4, y: 1.65, w: 5.6, h: 6.2, fill: { color: "F8FAFC" }, line: { color: "CBD5E1", width: 1.5 } });
                 slide.addText("📋 SCHOOL DETAILS", { x: 0.55, y: 1.75, w: 5.3, h: 0.4, fontSize: 14, bold: true, color: "1E3A8A" });
 
@@ -759,8 +800,8 @@
                 const stepY = 5.4 / rowFields.length;
                 rowFields.forEach((f, fIdx) => {
                     slide.addText([
-                        { text: f.label, options: { fontSize: 13, bold: true, color: "0F172A" } },
-                        { text: String(f.val), options: { fontSize: 13, bold: true, color: "1D4ED8" } }
+                        { text: f.label, options: { fontSize: parseInt(selectedFontSize), bold: true, color: "0F172A" } },
+                        { text: String(f.val), options: { fontSize: parseInt(selectedFontSize), bold: true, color: "1D4ED8" } }
                     ], { x: 0.55, y: startY + (fIdx * stepY), w: 5.3, h: stepY, autoFit: true });
                 });
 
@@ -776,12 +817,24 @@
                 .then(() => showStatus(`🎉 PPTX Exported Successfully!`, "#4ade80"));
         }
 
-        // EXPORT PDF
+        // FIXED PRINTABLE PDF EXPORT (html2canvas + jsPDF)
         function exportPDF() {
             const element = document.getElementById("previewSheet");
-            showStatus("Generating PDF...", "#38bdf8");
-            html2pdf().from(element).save('School_Presentation.pdf').then(() => {
-                showStatus("🎉 PDF Exported Successfully!", "#4ade80");
+            showStatus("Generating Printable PDF...", "#38bdf8");
+
+            html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('landscape', 'mm', 'a4');
+
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('School_Presentation.pdf');
+                showStatus("🎉 PDF Downloaded Successfully!", "#4ade80");
+            }).catch(err => {
+                showStatus("PDF Error: " + err.message, "#f87171");
             });
         }
 
