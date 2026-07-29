@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Cloud Portal v9.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v10.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,13 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- PptxGenJS, SheetJS, html2canvas, jsPDF & Firebase Cloud Database -->
+    <!-- PptxGenJS, SheetJS, html2canvas, jsPDF -->
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -183,8 +181,8 @@
     <div class="container">
         
         <div class="app-header">
-            <h1 id="appHeaderTitle"><i class="fa-solid fa-cloud-arrow-up"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Admin Control Center | Realtime Cloud Database Connected</p>
+            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
+            <p id="appHeaderSubtitle">Admin Control Center | Direct Standalone Multi-Device Portal</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -241,7 +239,7 @@
                         <select id="adminBlockSelect" onchange="renderAdminPhotoTable()" style="padding: 6px; width: 220px; display: inline-block;"></select>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-blue" onclick="goToStep3()"><i class="fa-solid fa-users-gear"></i> Next: Sub-Engineers Registration &amp; Cloud Sync</button>
+                        <button class="btn btn-blue" onclick="goToStep3()"><i class="fa-solid fa-users-gear"></i> Next: Sub-Engineers Registration &amp; Link</button>
                         <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download Editable PPTX</button>
                         <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF</button>
                     </div>
@@ -300,9 +298,9 @@
                 </div>
             </div>
 
-            <!-- STEP 03: SUB-ENGINEERS REGISTRATION & CLOUD SYNC -->
+            <!-- STEP 03: SUB-ENGINEERS REGISTRATION & LINK GENERATOR -->
             <div class="card" id="step3Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Cloud Sync</div>
+                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Link Activation</div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: flex-end; margin-bottom: 10px;">
                     <div>
@@ -335,22 +333,22 @@
                 </div>
 
                 <div style="margin-top: 12px; display: flex; gap: 10px;">
-                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-cloud-arrow-up"></i> 1. Save &amp; Upload Data to Cloud Database</button>
-                    <button class="btn btn-blue" onclick="goToStep7()"><i class="fa-solid fa-share-nodes"></i> 2. Get Shareable Link (Step 07)</button>
+                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-key"></i> 1. Save Data &amp; Encode Link Package</button>
+                    <button class="btn btn-blue" onclick="goToStep7()"><i class="fa-solid fa-share-nodes"></i> 2. View Shareable Link (Step 07)</button>
                 </div>
             </div>
 
             <!-- STEP 07: GENERATE SHAREABLE LINK -->
             <div class="card" id="step7Card" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-share-nodes"></i> Step 07: Share Photo Upload Link with Sub-Engineers</div>
-                <p style="font-size: 12px; color: #94a3b8;">Is link ko Sub-Engineers ko share karein. Google Cloud Sync ke dwara list **kisi bhi browser/mobile par direct** khulegi.</p>
+                <p style="font-size: 12px; color: #94a3b8;">Is link ko Sub-Engineers ko WhatsApp par share karein. Naye browser/mobile par kholne par list instant load ho jayegi.</p>
 
                 <div class="portal-link-box">
                     <div>
-                        <strong style="color: #38bdf8;"><i class="fa-solid fa-link"></i> Sub-Engineer Direct Entry Link:</strong>
-                        <div id="shareablePortalUrl" style="font-family: monospace; font-size: 12px; color: #4ade80; margin-top: 4px;">...</div>
+                        <strong style="color: #38bdf8;"><i class="fa-solid fa-link"></i> Sub-Engineer Encoded Entry Link:</strong>
+                        <div id="shareablePortalUrl" style="font-family: monospace; font-size: 11px; color: #4ade80; margin-top: 4px; word-break: break-all;">...</div>
                     </div>
-                    <div style="display:flex; gap:6px;">
+                    <div style="display:flex; gap:6px; flex-shrink: 0;">
                         <button class="btn btn-amber" onclick="copyShareablePortalLink()"><i class="fa-solid fa-copy"></i> Copy Link</button>
                         <button class="btn btn-blue" onclick="openShareablePortalLink()"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open in New Tab</button>
                     </div>
@@ -399,13 +397,6 @@
     </div>
 
     <script>
-        // FIREBASE REALTIME CLOUD DB CONFIGURATION
-        const firebaseConfig = {
-            databaseURL: "https://school-ppt-portal-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const cloudDb = firebase.database();
-
         // EXACT 5 PRE-FED SUB ENGINEERS
         const DEFAULT_ENGINEERS = [
             { name: "RAVI SINGH", mobile: "9399332633", block: "CHITRANGI" },
@@ -422,19 +413,26 @@
         let currentLoggedInEng = null;
         let selectedFontSize = 12;
 
-        // INIT Check Mode & Load Data
+        // INIT Check Mode & Load Link Encoded Data
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const mode = urlParams.get('mode');
+            const encodedPkg = urlParams.get('pkg');
+
+            // If URL carries encoded package, auto save it to LocalStorage
+            if (encodedPkg) {
+                try {
+                    const decodedJson = decodeURIComponent(atob(encodedPkg));
+                    localStorage.setItem("SCHOOL_PPT_DATA_PACKAGE", decodedJson);
+                } catch(e) { console.error("Pkg decode error", e); }
+            }
 
             if (mode === 'engineer') {
                 document.getElementById("adminPanel").style.display = "none";
                 document.getElementById("engineerPortalPanel").style.display = "block";
                 document.getElementById("appHeaderTitle").innerHTML = `<i class="fa-solid fa-camera"></i> Sub-Engineer Photo Entry Portal`;
                 document.getElementById("appHeaderSubtitle").innerText = `Upload Site Photos for Assigned Schools`;
-                
-                // Fetch cloud data automatically
-                syncFromCloudDb();
+                loadDataFromLocalStorage();
             } else {
                 document.getElementById("adminPanel").style.display = "block";
                 document.getElementById("engineerPortalPanel").style.display = "none";
@@ -559,10 +557,8 @@
             renderEngineerTable();
         }
 
-        // SAVE DATA PACKAGE TO CLOUD DATABASE (FIREBASE)
+        // SAVE DATA PACKAGE & GENERATE ENCODED SHAREABLE LINK
         function saveAdminDataAndEnablePortal() {
-            showStatus("Uploading Excel Data Package to Google Cloud DB...", "#38bdf8");
-
             const adminDataPackage = {
                 excelRowsData: excelRowsData,
                 selectedColumns: selectedColumns,
@@ -571,23 +567,24 @@
                 selectedFontSize: selectedFontSize
             };
 
-            cloudDb.ref('MASTER_PPT_DATA').set(adminDataPackage).then(() => {
-                const baseUrl = window.location.href.split('?')[0];
-                const engineerPortalUrl = `${baseUrl}?mode=engineer`;
+            const jsonStr = JSON.stringify(adminDataPackage);
+            localStorage.setItem("SCHOOL_PPT_DATA_PACKAGE", jsonStr);
 
-                document.getElementById("shareablePortalUrl").innerText = engineerPortalUrl;
-                document.getElementById("step7Card").style.display = "block";
+            // Encode Package into Base64 for URL Link Sharing
+            const encodedPkg = btoa(encodeURIComponent(jsonStr));
+            const baseUrl = window.location.href.split('?')[0];
+            const engineerPortalUrl = `${baseUrl}?mode=engineer&pkg=${encodedPkg}`;
 
-                showStatus("🎉 Excel Data Successfully Uploaded to Cloud! Any device can now load lists.", "#4ade80");
-            }).catch(err => {
-                showStatus("Cloud Save Error: " + err.message, "#f87171");
-            });
+            document.getElementById("shareablePortalUrl").innerText = engineerPortalUrl;
+            document.getElementById("step7Card").style.display = "block";
+
+            showStatus("🎉 Data Package Encoded & Link Active! Shareable URL is ready in Step 07.", "#4ade80");
         }
 
         function copyShareablePortalLink() {
             const linkText = document.getElementById("shareablePortalUrl").innerText;
             navigator.clipboard.writeText(linkText);
-            alert("Sub-Engineer Portal Link Copied!");
+            alert("Sub-Engineer Encoded Portal Link Copied!");
         }
 
         function openShareablePortalLink() {
@@ -684,9 +681,6 @@
                     pvBox.style.backgroundImage = `url('${evt.target.result}')`;
                     pvBox.innerText = "";
                 }
-
-                // Sync photo to cloud
-                cloudDb.ref(`PHOTOS/${idx}/${photoType}`).set(evt.target.result);
             };
             reader.readAsDataURL(file);
         }
@@ -708,32 +702,24 @@
         }
 
 
-        // ================= SUB ENGINEER PORTAL LOGIC (CLOUD POWERED) =================
-        function syncFromCloudDb() {
-            showStatus("Connecting to Google Cloud DB...", "#38bdf8");
-            cloudDb.ref('MASTER_PPT_DATA').once('value', snapshot => {
-                const pkg = snapshot.val();
-                if (pkg) {
-                    excelRowsData = pkg.excelRowsData || [];
-                    selectedColumns = pkg.selectedColumns || [];
-                    registeredEngineers = pkg.registeredEngineers || DEFAULT_ENGINEERS;
-                    showStatus("✅ Cloud Connected! Enter Mobile Number to Login.", "#4ade80");
-                } else {
-                    showStatus("⚠️ Notice: Admin ne abhi tak Cloud par Save Data nahi kiya hai.", "#f59e0b");
-                }
-            });
-
-            // Sync photos from cloud
-            cloudDb.ref('PHOTOS').on('value', snapshot => {
-                const pData = snapshot.val();
-                if (pData) {
-                    rowPhotosMap = pData;
-                }
-            });
+        // ================= SUB ENGINEER PORTAL LOGIC =================
+        function loadDataFromLocalStorage() {
+            const savedPkg = localStorage.getItem("SCHOOL_PPT_DATA_PACKAGE");
+            if (savedPkg) {
+                const pkg = JSON.parse(savedPkg);
+                excelRowsData = pkg.excelRowsData || [];
+                selectedColumns = pkg.selectedColumns || [];
+                registeredEngineers = pkg.registeredEngineers && pkg.registeredEngineers.length > 0 ? pkg.registeredEngineers : DEFAULT_ENGINEERS;
+                showStatus("✅ Data Loaded Successfully! Mobile Number se Login Karein.", "#4ade80");
+            } else {
+                registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
+                showStatus("⚠️ Notice: Link kholne se pehle Admin dwara Step 03 me Save Data package nahi banaya gaya tha.", "#f59e0b");
+            }
         }
 
         function subEngineerLogin() {
             const mob = document.getElementById("engLoginMobile").value.trim();
+            loadDataFromLocalStorage();
 
             const eng = registeredEngineers.find(e => String(e.mobile).trim() === mob);
             const statusDiv = document.getElementById("engLoginStatus");
@@ -753,12 +739,13 @@
             }
         }
 
+        // NON-EMPTY GUARANTEED TABLE RENDERER FOR SUB ENGINEERS
         function renderEngineerPhotoUploadTable() {
             const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
 
             if (excelRowsData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f87171; padding:20px;">Cloud par Data Upload nahi mila! Admin dwara Step 03 me 'Save Data' dabwayein.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f87171; padding:20px;">Excel Data Package Not Found! Kripya Admin se Step 03 wala Naya Shareable Link maangein.</td></tr>`;
                 return;
             }
 
@@ -832,9 +819,6 @@
             reader.onload = function(evt) {
                 rowPhotosMap[idx][photoType] = evt.target.result;
                 document.getElementById(`eng_${photoType === 'photo1' ? 'p1' : 'p2'}_thumb_${idx}`).innerHTML = `<img src="${evt.target.result}" class="img-thumb">`;
-                
-                // Upload photo direct to Cloud
-                cloudDb.ref(`PHOTOS/${idx}/${photoType}`).set(evt.target.result);
             };
             reader.readAsDataURL(file);
         }
