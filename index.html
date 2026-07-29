@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v3.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v4.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -122,7 +122,7 @@
         }
 
         .table-container {
-            max-height: 350px;
+            max-height: 380px;
             overflow-y: auto;
             border: 1px solid #334155;
             border-radius: 8px;
@@ -181,7 +181,7 @@
     <div class="container">
         
         <div class="app-header">
-            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal (v3.0)</h1>
+            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal (v4.0)</h1>
             <p id="appHeaderSubtitle">Admin Control Center | Data &amp; Photo Storage Managed Securely</p>
         </div>
 
@@ -396,7 +396,7 @@
     </div>
 
     <script>
-        // HARD-CODED EXACT 5 SUB ENGINEERS LIST
+        // EXACT 5 PRE-FED SUB ENGINEERS LIST
         const DEFAULT_ENGINEERS = [
             { name: "RAVI SINGH", mobile: "9399332633", block: "CHITRANGI" },
             { name: "AMBIKA MISHRA", mobile: "9981215385", block: "CHITRANGI" },
@@ -412,9 +412,9 @@
         let currentLoggedInEng = null;
         let selectedFontSize = 12;
 
-        // INIT: Check Mode & Auto Purge Old Cache
+        // INIT: Auto Reset Memory on First Load
         window.onload = function() {
-            // Auto purge old cache if Rahul Verma exists in local memory
+            // Force reset old local memory to replace Rahul Verma with exact 5 engineers
             const savedPkg = localStorage.getItem("SCHOOL_PPT_DATA_PACKAGE");
             if (savedPkg && savedPkg.includes("Rahul Verma")) {
                 localStorage.removeItem("SCHOOL_PPT_DATA_PACKAGE");
@@ -432,8 +432,6 @@
             } else {
                 document.getElementById("adminPanel").style.display = "block";
                 document.getElementById("engineerPortalPanel").style.display = "none";
-                
-                registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
                 renderEngineerTable();
             }
         };
@@ -461,6 +459,11 @@
                 showStatus("✅ Excel Loaded Successfully! Step 02 me Columns Select Karein.", "#4ade80");
             };
             reader.readAsArrayBuffer(file);
+        }
+
+        // Helper: Extract Block Value From Any Column Name
+        function extractBlockName(row) {
+            return String(row['block_name'] || row['Block Name'] || row['block'] || row['Block'] || row['जनपद'] || row['BLOCK_NAME'] || row['BLOCK'] || '').toUpperCase().trim();
         }
 
         // STEP 02: Column Checkboxes
@@ -594,7 +597,7 @@
             const select = document.getElementById("adminBlockSelect");
             select.innerHTML = `<option value="ALL">All Blocks Combined</option>`;
 
-            const blocks = [...new Set(excelRowsData.map(r => String(r['block_name'] || r['जनपद'] || 'Main').toUpperCase()))];
+            const blocks = [...new Set(excelRowsData.map(r => extractBlockName(r)))].filter(b => b !== '');
             blocks.forEach(b => {
                 select.innerHTML += `<option value="${b}">${b}</option>`;
             });
@@ -606,7 +609,7 @@
             tbody.innerHTML = "";
 
             excelRowsData.forEach((row, idx) => {
-                const block = String(row['block_name'] || row['जनपद'] || 'Main').toUpperCase();
+                const block = extractBlockName(row) || 'MAIN';
                 if (filter !== "ALL" && block !== filter) return;
 
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
@@ -660,7 +663,7 @@
             document.getElementById("pvSchName").innerText = firstRow['school_name'] || firstRow['School Name in Hindi'] || 'Sample School';
             document.getElementById("pvUdise").innerText = "UDISE: " + (firstRow['udise_sch_code'] || firstRow['UDISE Code'] || '123456');
             document.getElementById("pvPanchayat").innerText = "पंचायत: " + (firstRow['Panchayat Name'] || firstRow['ग्राम पंचायत'] || 'Gram Panchayat');
-            document.getElementById("pvBlock").innerText = "जनपद: " + (firstRow['block_name'] || firstRow['जनपद'] || 'Block');
+            document.getElementById("pvBlock").innerText = "जनपद: " + (extractBlockName(firstRow) || 'Block');
 
             const fieldsContainer = document.getElementById("pvDetailsFields");
             fieldsContainer.innerHTML = `<div><strong>• Sr No. (क्र.):</strong> <span style="color:#1d4ed8;">${firstRow['Sr'] || 1}</span></div>`;
@@ -707,18 +710,30 @@
             }
         }
 
+        // SMART FLEXIBLE MATCHING FOR SCHOOLS LIST
         function renderEngineerPhotoUploadTable() {
             const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
 
+            if (excelRowsData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f87171; padding:20px;">No Excel Data Found! Admin dwara Excel Save karwayein.</td></tr>`;
+                return;
+            }
+
+            let renderedCount = 0;
+
             excelRowsData.forEach((row, idx) => {
-                const rowBlock = String(row['block_name'] || row['जनपद'] || '').toUpperCase().trim();
+                const rowBlock = extractBlockName(row);
                 const engBlock = String(currentLoggedInEng.block).toUpperCase().trim();
 
-                if (currentLoggedInEng && rowBlock !== engBlock) {
+                // Flexible Matching
+                const isMatch = (rowBlock === engBlock) || (rowBlock.includes(engBlock)) || (engBlock.includes(rowBlock));
+
+                if (currentLoggedInEng && !isMatch && rowBlock !== '') {
                     return;
                 }
 
+                renderedCount++;
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
                 const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
                 const srNo = row['Sr'] || row['Sr. No.'] || (idx + 1);
@@ -740,6 +755,32 @@
                     </tr>
                 `;
             });
+
+            // Fallback rendering if no block matches
+            if (renderedCount === 0) {
+                excelRowsData.forEach((row, idx) => {
+                    const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
+                    const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
+                    const srNo = row['Sr'] || row['Sr. No.'] || (idx + 1);
+
+                    if (!rowPhotosMap[idx]) rowPhotosMap[idx] = { photo1: null, photo2: null };
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${srNo}</strong></td>
+                            <td><strong>${schName}</strong><br><span style="color:#94a3b8; font-size:10px;">${udise}</span></td>
+                            <td>
+                                <input type="file" accept="image/*" onchange="handleEngineerPhotoUpload(event, ${idx}, 'photo1')">
+                                <span id="eng_p1_thumb_${idx}">${rowPhotosMap[idx].photo1 ? `<img src="${rowPhotosMap[idx].photo1}" class="img-thumb">` : ''}</span>
+                            </td>
+                            <td>
+                                <input type="file" accept="image/*" onchange="handleEngineerPhotoUpload(event, ${idx}, 'photo2')">
+                                <span id="eng_p2_thumb_${idx}">${rowPhotosMap[idx].photo2 ? `<img src="${rowPhotosMap[idx].photo2}" class="img-thumb">` : ''}</span>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
         }
 
         function handleEngineerPhotoUpload(e, idx, photoType) {
@@ -776,7 +817,7 @@
             pptx.layout = 'A4_LANDSCAPE';
 
             excelRowsData.forEach((row, idx) => {
-                const block = String(row['block_name'] || row['जनपद'] || 'Main').toUpperCase();
+                const block = extractBlockName(row) || 'MAIN';
                 if (filter !== "ALL" && block !== filter) return;
 
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'];
