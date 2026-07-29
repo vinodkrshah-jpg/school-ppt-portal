@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v4.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v5.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -181,7 +181,7 @@
     <div class="container">
         
         <div class="app-header">
-            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal (v4.0)</h1>
+            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
             <p id="appHeaderSubtitle">Admin Control Center | Data &amp; Photo Storage Managed Securely</p>
         </div>
 
@@ -396,7 +396,7 @@
     </div>
 
     <script>
-        // EXACT 5 PRE-FED SUB ENGINEERS LIST
+        // EXACT 5 PRE-FED SUB ENGINEERS
         const DEFAULT_ENGINEERS = [
             { name: "RAVI SINGH", mobile: "9399332633", block: "CHITRANGI" },
             { name: "AMBIKA MISHRA", mobile: "9981215385", block: "CHITRANGI" },
@@ -412,9 +412,8 @@
         let currentLoggedInEng = null;
         let selectedFontSize = 12;
 
-        // INIT: Auto Reset Memory on First Load
+        // INIT Check Mode
         window.onload = function() {
-            // Force reset old local memory to replace Rahul Verma with exact 5 engineers
             const savedPkg = localStorage.getItem("SCHOOL_PPT_DATA_PACKAGE");
             if (savedPkg && savedPkg.includes("Rahul Verma")) {
                 localStorage.removeItem("SCHOOL_PPT_DATA_PACKAGE");
@@ -432,6 +431,7 @@
             } else {
                 document.getElementById("adminPanel").style.display = "block";
                 document.getElementById("engineerPortalPanel").style.display = "none";
+                registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
                 renderEngineerTable();
             }
         };
@@ -461,9 +461,15 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // Helper: Extract Block Value From Any Column Name
+        // Helper: Extract Block Name From Any Column Key
         function extractBlockName(row) {
-            return String(row['block_name'] || row['Block Name'] || row['block'] || row['Block'] || row['जनपद'] || row['BLOCK_NAME'] || row['BLOCK'] || '').toUpperCase().trim();
+            for (let k in row) {
+                const lk = k.toLowerCase().trim();
+                if (lk.includes('block') || lk.includes('जनपद')) {
+                    return String(row[k] || '').toUpperCase().trim();
+                }
+            }
+            return '';
         }
 
         // STEP 02: Column Checkboxes
@@ -684,7 +690,7 @@
                 rowPhotosMap = pkg.rowPhotosMap || {};
             } else {
                 registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
-                showStatus("⚠️ Admin dwara abhi tak Excel Data Save nahi kiya gaya hai!", "#f87171");
+                showStatus("⚠️ Notice: Admin dwara Save Data button nahi dabaya gaya tha.", "#f59e0b");
             }
         }
 
@@ -710,15 +716,10 @@
             }
         }
 
-        // SMART FLEXIBLE MATCHING FOR SCHOOLS LIST
+        // FAILSAFE TABLE RENDERER
         function renderEngineerPhotoUploadTable() {
             const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
-
-            if (excelRowsData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f87171; padding:20px;">No Excel Data Found! Admin dwara Excel Save karwayein.</td></tr>`;
-                return;
-            }
 
             let renderedCount = 0;
 
@@ -726,10 +727,9 @@
                 const rowBlock = extractBlockName(row);
                 const engBlock = String(currentLoggedInEng.block).toUpperCase().trim();
 
-                // Flexible Matching
-                const isMatch = (rowBlock === engBlock) || (rowBlock.includes(engBlock)) || (engBlock.includes(rowBlock));
+                const isMatch = (rowBlock === engBlock) || (rowBlock.includes(engBlock)) || (engBlock.includes(rowBlock)) || (rowBlock === '');
 
-                if (currentLoggedInEng && !isMatch && rowBlock !== '') {
+                if (currentLoggedInEng && !isMatch) {
                     return;
                 }
 
@@ -756,7 +756,7 @@
                 `;
             });
 
-            // Fallback rendering if no block matches
+            // GUARANTEED FALLBACK: If count is 0, show all rows!
             if (renderedCount === 0) {
                 excelRowsData.forEach((row, idx) => {
                     const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
