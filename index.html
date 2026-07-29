@@ -396,39 +396,39 @@
     </div>
 
     <script>
-        // GLOBAL DATA VARIABLES
-        let excelRowsData = [];
-        let selectedColumns = [];
-        
-        // Exact 5 Pre-fed Sub Engineers List
-        let registeredEngineers = [
+        // EXACT 5 SUB ENGINEERS LIST
+        const DEFAULT_ENGINEERS = [
             { name: "RAVI SINGH", mobile: "9399332633", block: "CHITRANGI" },
             { name: "AMBIKA MISHRA", mobile: "9981215385", block: "CHITRANGI" },
             { name: "SANJAY TAMRAKAR", mobile: "7000425030", block: "DEOSAR" },
             { name: "RAKESH SHAH", mobile: "9926333689", block: "WAIDHAN" },
             { name: "SHIV SHARAN SINGH", mobile: "8461932255", block: "WAIDHAN" }
         ];
-        
+
+        let excelRowsData = [];
+        let selectedColumns = [];
+        let registeredEngineers = [...DEFAULT_ENGINEERS];
         let rowPhotosMap = {}; 
         let currentLoggedInEng = null;
         let selectedFontSize = 12;
 
-        // INIT: Check Mode (Admin vs Engineer)
+        // INIT: Check Mode & Auto Clear Cache
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const mode = urlParams.get('mode');
 
             if (mode === 'engineer') {
-                // SUB-ENGINEER MODE (DIRECT OPEN)
                 document.getElementById("adminPanel").style.display = "none";
                 document.getElementById("engineerPortalPanel").style.display = "block";
                 document.getElementById("appHeaderTitle").innerHTML = `<i class="fa-solid fa-camera"></i> Sub-Engineer Photo Entry Portal`;
                 document.getElementById("appHeaderSubtitle").innerText = `Upload Site Photos for Assigned Schools`;
                 loadDataFromLocalStorage();
             } else {
-                // ADMIN MODE
                 document.getElementById("adminPanel").style.display = "block";
                 document.getElementById("engineerPortalPanel").style.display = "none";
+                
+                // Force sync default engineers list
+                registeredEngineers = [...DEFAULT_ENGINEERS];
                 renderEngineerTable();
             }
         };
@@ -527,7 +527,7 @@
             renderEngineerTable();
         }
 
-        // SAVE DATA TO LOCAL STORAGE & ACTIVATE SUB ENGINEER LINK WITH PARAMETER
+        // SAVE DATA TO LOCAL STORAGE
         function saveAdminDataAndEnablePortal() {
             const adminDataPackage = {
                 excelRowsData: excelRowsData,
@@ -540,7 +540,6 @@
 
             localStorage.setItem("SCHOOL_PPT_DATA_PACKAGE", JSON.stringify(adminDataPackage));
 
-            // Generate Working Portal Link with mode=engineer parameter
             const baseUrl = window.location.href.split('?')[0];
             const engineerPortalUrl = `${baseUrl}?mode=engineer`;
 
@@ -673,9 +672,10 @@
                 const pkg = JSON.parse(savedPkg);
                 excelRowsData = pkg.excelRowsData || [];
                 selectedColumns = pkg.selectedColumns || [];
-                registeredEngineers = pkg.registeredEngineers || registeredEngineers;
+                registeredEngineers = pkg.registeredEngineers && pkg.registeredEngineers.length > 0 ? pkg.registeredEngineers : DEFAULT_ENGINEERS;
                 rowPhotosMap = pkg.rowPhotosMap || {};
             } else {
+                registeredEngineers = [...DEFAULT_ENGINEERS];
                 showStatus("⚠️ Admin dwara abhi tak Excel Data Save nahi kiya gaya hai!", "#f87171");
             }
         }
@@ -684,7 +684,6 @@
             const mob = document.getElementById("engLoginMobile").value.trim();
             loadDataFromLocalStorage();
 
-            // Case-Insensitive Matching
             const eng = registeredEngineers.find(e => String(e.mobile).trim() === mob);
             const statusDiv = document.getElementById("engLoginStatus");
 
@@ -703,7 +702,6 @@
             }
         }
 
-        // Case-Insensitive Filter for Sub Engineer Block Matching
         function renderEngineerPhotoUploadTable() {
             const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
@@ -712,7 +710,7 @@
                 const rowBlock = String(row['block_name'] || row['जनपद'] || '').toUpperCase().trim();
                 const engBlock = String(currentLoggedInEng.block).toUpperCase().trim();
 
-                // Case-Insensitive Matching
+                // Case-Insensitive Matching Fix
                 if (currentLoggedInEng && rowBlock !== engBlock) {
                     return;
                 }
@@ -793,7 +791,7 @@
                 slide.addText(String(schName || ''), { x: 0.5, y: 0.7, w: 4.8, h: 0.4, fontSize: 16, bold: true, color: "FFFFFF", autoFit: true });
                 slide.addText("UDISE Code: " + String(udise || ''), { x: 0.5, y: 1.1, w: 4.8, h: 0.3, fontSize: 11, bold: true, color: "CBD5E1" });
 
-                // Details Card (Dynamic Font Size)
+                // Details Card
                 slide.addShape(pptx.ShapeType.roundRect, { x: 0.4, y: 1.65, w: 5.6, h: 6.2, fill: { color: "F8FAFC" }, line: { color: "CBD5E1", width: 1.5 } });
                 slide.addText("📋 SCHOOL DETAILS", { x: 0.55, y: 1.75, w: 5.3, h: 0.4, fontSize: 14, bold: true, color: "1E3A8A" });
 
@@ -821,7 +819,7 @@
                 .then(() => showStatus(`🎉 PPTX Exported Successfully!`, "#4ade80"));
         }
 
-        // FIXED PRINTABLE PDF EXPORT (html2canvas + jsPDF)
+        // WORKING PDF EXPORT
         function exportPDF() {
             const element = document.getElementById("previewSheet");
             showStatus("Generating Printable PDF...", "#38bdf8");
