@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v5.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v6.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -181,7 +181,7 @@
     <div class="container">
         
         <div class="app-header">
-            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
+            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal (v6.0)</h1>
             <p id="appHeaderSubtitle">Admin Control Center | Data &amp; Photo Storage Managed Securely</p>
         </div>
 
@@ -208,51 +208,12 @@
             <div class="card" id="step2Card" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-list-check"></i> Step 02: Select Columns for Slide Details Box</div>
                 <div id="columnCheckboxes" class="column-grid"></div>
-                <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Register Sub-Engineers</button>
-            </div>
-
-            <!-- STEP 03: SUB-ENGINEERS REGISTRATION -->
-            <div class="card" id="step3Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Block Assignment</div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: flex-end; margin-bottom: 10px;">
-                    <div>
-                        <label style="font-size: 11px;">Sub-Engineer Name:</label>
-                        <input type="text" id="engName" class="input-text" placeholder="e.g. RAVI SINGH">
-                    </div>
-                    <div>
-                        <label style="font-size: 11px;">Mobile Number (10-Digit):</label>
-                        <input type="text" id="engMobile" class="input-text" placeholder="e.g. 9399332633">
-                    </div>
-                    <div>
-                        <label style="font-size: 11px;">Assigned Block Name:</label>
-                        <input type="text" id="engBlock" class="input-text" placeholder="e.g. CHITRANGI">
-                    </div>
-                    <button class="btn btn-green" onclick="addSubEngineer()"><i class="fa-solid fa-user-plus"></i> Add</button>
-                </div>
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Mobile Number</th>
-                                <th>Assigned Block</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="engineerTableBody"></tbody>
-                    </table>
-                </div>
-
-                <div style="margin-top: 12px;">
-                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-floppy-disk"></i> Save Data &amp; Activate Sub-Engineer Link</button>
-                </div>
+                <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Font Size &amp; Theme Adjustment</button>
             </div>
 
             <!-- STEP 04: THEME & FONT SIZE CONTROL + LIVE PREVIEW -->
             <div class="card" id="step4Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-sliders"></i> Step 04: Font Size &amp; Theme Adjustment + Live Preview</div>
+                <div class="step-title"><i class="fa-solid fa-sliders"></i> Step 04: Font Size Adjustment &amp; Live Preview</div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
                     <div>
@@ -265,20 +226,20 @@
                     </div>
                 </div>
 
-                <button class="btn btn-blue" onclick="goToStep5()"><i class="fa-solid fa-arrow-right"></i> Next: Select Block Filter &amp; Photo Table</button>
+                <button class="btn btn-blue" onclick="goToStep5()"><i class="fa-solid fa-arrow-right"></i> Next: Block Filter &amp; Photo Table</button>
             </div>
 
-            <!-- STEP 05: ADMIN DIRECT ENTRY & EXPORT PPT/PDF -->
+            <!-- STEP 05/06: ADMIN DIRECT ENTRY & EXPORT PPT/PDF -->
             <div class="card" id="step5Card" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-table-list"></i> Step 06: Admin Live Photo Table &amp; Final PPTX/PDF Export</div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <div>
                         <label style="font-size: 12px; font-weight: 600;">Block Filter:</label>
-                        <select id="adminBlockSelect" onchange="renderAdminPhotoTable()" style="padding: 6px; width: 200px; display: inline-block;"></select>
+                        <select id="adminBlockSelect" onchange="renderAdminPhotoTable()" style="padding: 6px; width: 220px; display: inline-block;"></select>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-blue" onclick="goToStep7()"><i class="fa-solid fa-share-nodes"></i> Next: Sub-Engineer Link Generator (Step 07)</button>
+                        <button class="btn btn-blue" onclick="goToStep3()"><i class="fa-solid fa-users-gear"></i> Next: Register Sub-Engineers (Step 03)</button>
                         <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download Editable PPTX</button>
                         <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF</button>
                     </div>
@@ -334,6 +295,45 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- STEP 03: SUB-ENGINEERS REGISTRATION (Shifted before Step 7) -->
+            <div class="card" id="step3Card" style="display: none;">
+                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Block Assignment</div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: flex-end; margin-bottom: 10px;">
+                    <div>
+                        <label style="font-size: 11px;">Sub-Engineer Name:</label>
+                        <input type="text" id="engName" class="input-text" placeholder="e.g. RAVI SINGH">
+                    </div>
+                    <div>
+                        <label style="font-size: 11px;">Mobile Number (10-Digit):</label>
+                        <input type="text" id="engMobile" class="input-text" placeholder="e.g. 9399332633">
+                    </div>
+                    <div>
+                        <label style="font-size: 11px;">Assigned Block Name:</label>
+                        <input type="text" id="engBlock" class="input-text" placeholder="e.g. CHITRANGI">
+                    </div>
+                    <button class="btn btn-green" onclick="addSubEngineer()"><i class="fa-solid fa-user-plus"></i> Add</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Mobile Number</th>
+                                <th>Assigned Block</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="engineerTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 12px;">
+                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-floppy-disk"></i> Save Data &amp; Generate Sub-Engineer Link (Step 07)</button>
                 </div>
             </div>
 
@@ -412,7 +412,7 @@
         let currentLoggedInEng = null;
         let selectedFontSize = 12;
 
-        // INIT Check Mode
+        // INIT Check Mode & Clean LocalStorage
         window.onload = function() {
             const savedPkg = localStorage.getItem("SCHOOL_PPT_DATA_PACKAGE");
             if (savedPkg && savedPkg.includes("Rahul Verma")) {
@@ -431,10 +431,20 @@
             } else {
                 document.getElementById("adminPanel").style.display = "block";
                 document.getElementById("engineerPortalPanel").style.display = "none";
-                registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
                 renderEngineerTable();
             }
         };
+
+        // Extract Block Name From Excel Row
+        function extractBlockName(row) {
+            for (let k in row) {
+                const lk = k.toLowerCase().trim();
+                if (lk.includes('block') || lk.includes('जनपद') || lk.includes('janpad')) {
+                    return String(row[k] || '').toUpperCase().trim();
+                }
+            }
+            return '';
+        }
 
         // STEP 01: Process Uploaded Excel
         function processUploadedExcel(e) {
@@ -448,28 +458,27 @@
                 const data = new Uint8Array(evt.target.result);
                 const wb = XLSX.read(data, { type: 'array' });
 
-                const firstSheet = wb.SheetNames[0];
-                const ws = wb.Sheets[firstSheet];
-                excelRowsData = XLSX.utils.sheet_to_json(ws);
+                // Process All Sheets inside Excel File
+                excelRowsData = [];
+                wb.SheetNames.forEach(sheetName => {
+                    const ws = wb.Sheets[sheetName];
+                    const sheetRows = XLSX.utils.sheet_to_json(ws);
+                    sheetRows.forEach(r => {
+                        if (!r['block_name'] && !r['जनपद']) {
+                            r['block_name'] = sheetName.toUpperCase().trim();
+                        }
+                        excelRowsData.push(r);
+                    });
+                });
 
-                const rawHeaders = XLSX.utils.sheet_to_json(ws, { header: 1 })[0];
+                const firstSheet = wb.SheetNames[0];
+                const rawHeaders = XLSX.utils.sheet_to_json(wb.Sheets[firstSheet], { header: 1 })[0];
                 renderColumnCheckboxes(rawHeaders);
 
                 document.getElementById("step2Card").style.display = "block";
                 showStatus("✅ Excel Loaded Successfully! Step 02 me Columns Select Karein.", "#4ade80");
             };
             reader.readAsArrayBuffer(file);
-        }
-
-        // Helper: Extract Block Name From Any Column Key
-        function extractBlockName(row) {
-            for (let k in row) {
-                const lk = k.toLowerCase().trim();
-                if (lk.includes('block') || lk.includes('जनपद')) {
-                    return String(row[k] || '').toUpperCase().trim();
-                }
-            }
-            return '';
         }
 
         // STEP 02: Column Checkboxes
@@ -497,9 +506,12 @@
                 return;
             }
 
-            document.getElementById("step3Card").style.display = "block";
-            renderEngineerTable();
-            showStatus("✅ Columns Selected! Step 03 me Sub-Engineers feed karein.", "#4ade80");
+            document.getElementById("step4Card").style.display = "block";
+            document.getElementById("step5Card").style.display = "block";
+            populateAdminBlockDropdown();
+            renderAdminPhotoTable();
+            updatePreviewSheet();
+            showStatus("✅ Columns Selected! Step 04 & 06 Ready.", "#4ade80");
         }
 
         // STEP 03: Register Engineers
@@ -558,15 +570,9 @@
             const engineerPortalUrl = `${baseUrl}?mode=engineer`;
 
             document.getElementById("shareablePortalUrl").innerText = engineerPortalUrl;
-            document.getElementById("step4Card").style.display = "block";
-            document.getElementById("step5Card").style.display = "block";
             document.getElementById("step7Card").style.display = "block";
 
-            populateAdminBlockDropdown();
-            renderAdminPhotoTable();
-            updatePreviewSheet();
-
-            showStatus("🎉 Data Saved! Sub-Engineer Shareable Link Activated.", "#4ade80");
+            showStatus("🎉 Data Saved! Sub-Engineer Shareable Link Activated in Step 07.", "#4ade80");
         }
 
         function copyShareablePortalLink() {
@@ -594,17 +600,27 @@
             document.getElementById("step5Card").style.display = "block";
         }
 
-        function goToStep7() {
-            document.getElementById("step7Card").style.display = "block";
+        function goToStep3() {
+            document.getElementById("step3Card").style.display = "block";
         }
 
-        // STEP 05: Admin Live Table & Preview
+        // STEP 05: Admin Live Table & Preview (Merging All Unique Blocks)
         function populateAdminBlockDropdown() {
             const select = document.getElementById("adminBlockSelect");
             select.innerHTML = `<option value="ALL">All Blocks Combined</option>`;
 
-            const blocks = [...new Set(excelRowsData.map(r => extractBlockName(r)))].filter(b => b !== '');
-            blocks.forEach(b => {
+            let uniqueBlocks = new Set();
+            excelRowsData.forEach(r => {
+                const b = extractBlockName(r);
+                if (b) uniqueBlocks.add(b);
+            });
+
+            // Also add blocks assigned to Sub-Engineers
+            registeredEngineers.forEach(e => {
+                if (e.block) uniqueBlocks.add(e.block.toUpperCase().trim());
+            });
+
+            uniqueBlocks.forEach(b => {
                 select.innerHTML += `<option value="${b}">${b}</option>`;
             });
         }
@@ -616,7 +632,7 @@
 
             excelRowsData.forEach((row, idx) => {
                 const block = extractBlockName(row) || 'MAIN';
-                if (filter !== "ALL" && block !== filter) return;
+                if (filter !== "ALL" && !block.includes(filter) && !filter.includes(block)) return;
 
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
                 const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
@@ -716,10 +732,15 @@
             }
         }
 
-        // FAILSAFE TABLE RENDERER
+        // GUARANTEED NON-EMPTY RENDERER FOR SUB ENGINEER
         function renderEngineerPhotoUploadTable() {
             const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
+
+            if (excelRowsData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f87171; padding:20px;">Excel Data Available Nahi Hai! Admin dwara Step 03 me Save Data karwayein.</td></tr>`;
+                return;
+            }
 
             let renderedCount = 0;
 
@@ -756,7 +777,7 @@
                 `;
             });
 
-            // GUARANTEED FALLBACK: If count is 0, show all rows!
+            // GUARANTEED FALLBACK: Render all rows if 0 match
             if (renderedCount === 0) {
                 excelRowsData.forEach((row, idx) => {
                     const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
@@ -818,7 +839,7 @@
 
             excelRowsData.forEach((row, idx) => {
                 const block = extractBlockName(row) || 'MAIN';
-                if (filter !== "ALL" && block !== filter) return;
+                if (filter !== "ALL" && !block.includes(filter) && !filter.includes(block)) return;
 
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'];
                 const udise = row['udise_sch_code'] || row['UDISE Code'];
