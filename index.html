@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master School PPT & PDF Generator (Multi-Engineer System)</title>
+    <title>School Repair &amp; Dilapidated PPT Portal</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,6 @@
     <!-- PptxGenJS, SheetJS & html2pdf.js -->
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,38 +25,38 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 25px 20px;
+            padding: 20px;
         }
 
-        .container { width: 100%; max-width: 1200px; }
+        .container { width: 100%; max-width: 1100px; }
 
-        .app-header { text-align: center; margin-bottom: 25px; }
-        .app-header h1 { font-size: 26px; color: #38bdf8; }
+        .app-header { text-align: center; margin-bottom: 20px; }
+        .app-header h1 { font-size: 24px; color: #38bdf8; }
         .app-header p { font-size: 13px; color: #94a3b8; }
 
         .card {
             background-color: #1e293b;
             border: 1px solid #334155;
             border-radius: 12px;
-            padding: 22px 25px;
-            margin-bottom: 20px;
+            padding: 20px;
+            margin-bottom: 18px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
         .step-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: #38bdf8;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .upload-zone {
             border: 2px dashed #3b82f6;
             background-color: #0f172a;
-            padding: 25px;
+            padding: 20px;
             text-align: center;
             border-radius: 10px;
             cursor: pointer;
@@ -70,7 +69,7 @@
 
         .input-text, select {
             width: 100%;
-            padding: 10px 14px;
+            padding: 10px;
             background-color: #0f172a;
             border: 1px solid #475569;
             border-radius: 6px;
@@ -85,13 +84,13 @@
             font-family: 'Poppins', sans-serif;
             font-size: 13px;
             font-weight: 600;
-            padding: 10px 18px;
+            padding: 9px 16px;
             border-radius: 8px;
             border: none;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.2s ease;
         }
         .btn-green { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
@@ -103,14 +102,14 @@
 
         .column-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin: 12px 0;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 8px;
+            margin: 10px 0;
         }
 
         .col-checkbox-label {
             background-color: #0f172a;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             border: 1px solid #475569;
             font-size: 12px;
@@ -120,43 +119,39 @@
             cursor: pointer;
         }
 
-        /* Tables Style */
         .table-container {
             max-height: 350px;
             overflow-y: auto;
             border: 1px solid #334155;
             border-radius: 8px;
-            margin-top: 12px;
+            margin-top: 10px;
         }
 
         table { width: 100%; border-collapse: collapse; font-size: 12px; background-color: #0f172a; }
-        th, td { padding: 8px 12px; border-bottom: 1px solid #1e293b; text-align: left; }
+        th, td { padding: 8px 10px; border-bottom: 1px solid #1e293b; text-align: left; }
         th { background-color: #1e293b; color: #38bdf8; position: sticky; top: 0; z-index: 5; }
 
-        .img-thumb { width: 40px; height: 35px; object-fit: cover; border-radius: 4px; border: 1px solid #38bdf8; vertical-align: middle; margin-left: 5px; }
+        .img-thumb { width: 45px; height: 38px; object-fit: cover; border-radius: 4px; border: 1px solid #38bdf8; vertical-align: middle; margin-left: 5px; }
 
-        /* Preview Sheet Box */
         .preview-box {
             width: 100%;
             background-color: #ffffff;
             aspect-ratio: 297 / 210;
             border-radius: 10px;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             color: #1e293b;
             position: relative;
             overflow: hidden;
             border: 2px solid #38bdf8;
-            margin-top: 15px;
-            background-size: cover;
-            background-position: center;
+            margin-top: 10px;
         }
 
         .portal-link-box {
             background-color: #0f172a;
             border: 1px solid #3b82f6;
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -173,7 +168,7 @@
             text-align: center;
             font-weight: 600;
             display: none;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             font-size: 13px;
         }
     </style>
@@ -183,243 +178,257 @@
     <div class="container">
         
         <div class="app-header">
-            <h1><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Presentation System</h1>
-            <p>11-Step Interactive Workflow | Real Working Link Support | Storage &amp; Final Generation Control</p>
+            <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
+            <p id="appHeaderSubtitle">Admin Control Center | Data &amp; Photo Storage Managed Securely</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
 
-        <!-- STEP 01: WORK TITLE & EXCEL FILE UPLOAD -->
-        <div class="card" id="step1Card">
-            <div class="step-title"><i class="fa-solid fa-file-excel"></i> Step 01: Title Set Karein Aur Excel File Upload Karein</div>
+        <!-- ================= ADMIN SECTION ================= -->
+        <div id="adminPanel">
             
-            <label style="font-size: 12px; font-weight: 600;">Work PPT Title (Editable - Top Banner Text):</label>
-            <input type="text" id="pptWorkTitle" class="input-text" value="SCHOOL REPAIR & DILAPIDATED BUILDING STATUS" oninput="updatePreviewSheet()" style="margin-bottom: 15px;">
-
-            <div class="upload-zone">
-                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: #3b82f6; margin-bottom: 8px;"></i>
-                <p style="font-weight: 600;">Apni Repair / Dilapidated List Excel File (.xlsx, .xls) Yahan Choose Karein</p>
-                <input type="file" accept=".xlsx, .xls" onchange="processUploadedExcel(event)">
-            </div>
-        </div>
-
-        <!-- STEP 02: SELECT DETAILS COLUMNS -->
-        <div class="card" id="step2Card" style="display: none;">
-            <div class="step-title"><i class="fa-solid fa-list-check"></i> Step 02: Details Panel me Kaun-Kaun se Columns Dikhane hain?</div>
-            <p style="font-size: 12px; color: #94a3b8;">(Select Columns to display inside the left Details Card on every slide):</p>
-            <div id="columnCheckboxes" class="column-grid"></div>
-            <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Register Sub-Engineers (Step 03)</button>
-        </div>
-
-        <!-- STEP 03: REGISTER SUB ENGINEERS & ASSIGN BLOCKS -->
-        <div class="card" id="step3Card" style="display: none;">
-            <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers Register Karein, Mobile Feed Karein &amp; Block Assign Karein</div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: flex-end; margin-bottom: 12px;">
-                <div>
-                    <label style="font-size: 11px; font-weight: 600;">Sub Engineer Name:</label>
-                    <input type="text" id="engName" class="input-text" placeholder="e.g. Rahul Verma">
-                </div>
-                <div>
-                    <label style="font-size: 11px; font-weight: 600;">Mobile Number (10 Digit):</label>
-                    <input type="text" id="engMobile" class="input-text" placeholder="e.g. 9876543210">
-                </div>
-                <div>
-                    <label style="font-size: 11px; font-weight: 600;">Assigned Block Name:</label>
-                    <input type="text" id="engBlock" class="input-text" placeholder="e.g. Chitrangi">
-                </div>
-                <button class="btn btn-green" onclick="addSubEngineer()"><i class="fa-solid fa-user-plus"></i> Add Engineer</button>
-            </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Sub-Engineer Name</th>
-                            <th>Feeded Mobile Number</th>
-                            <th>Assigned Block</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="engineerTableBody"></tbody>
-                </table>
-            </div>
-
-            <div style="margin-top: 15px;">
-                <button class="btn btn-blue" onclick="goToStep4()"><i class="fa-solid fa-arrow-right"></i> Next: Themes &amp; Live Preview (Step 04)</button>
-            </div>
-        </div>
-
-        <!-- STEP 04: THEME SELECTOR, GOOGLE BACKGROUND & LIVE PREVIEW -->
-        <div class="card" id="step4Card" style="display: none;">
-            <div class="step-title"><i class="fa-solid fa-palette"></i> Step 04: Select Color Theme &amp; Online Google Background + Live Preview</div>
-            
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-bottom: 15px;">
-                <div>
-                    <strong style="font-size: 12px;">Pre-set Color Themes:</strong>
-                    <div style="display: flex; gap: 8px; margin-top: 6px;">
-                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #1e3a8a; cursor: pointer; border: 2px solid #fff;" onclick="setTheme('#1e3a8a', '#2563eb')"></div>
-                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #065f46; cursor: pointer; border: 2px solid #fff;" onclick="setTheme('#065f46', '#10b981')"></div>
-                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #831843; cursor: pointer; border: 2px solid #fff;" onclick="setTheme('#831843', '#be185d')"></div>
-                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #0f172a; cursor: pointer; border: 2px solid #fff;" onclick="setTheme('#0f172a', '#3b82f6')"></div>
-                    </div>
-                </div>
-
-                <div style="flex-grow: 1;">
-                    <label style="font-size: 12px; font-weight: 600;">Google / Online Image Background URL (Browse Theme):</label>
-                    <input type="text" id="bgImageUrl" class="input-text" placeholder="https://images.unsplash.com/photo-1557683316-973673baf926 or Image URL" oninput="applyOnlineBgImage()">
-                </div>
-            </div>
-
-            <!-- LIVE SLIDE PREVIEW -->
-            <div style="font-weight: 700; color: #38bdf8; font-size: 13px; margin-bottom: 6px;"><i class="fa-solid fa-eye"></i> Live Preview Sheet of PPT:</div>
-            <div class="preview-box" id="previewSheet">
-                <div id="pvWorkBanner" style="background: #1e3a8a; color: #fff; text-align: center; font-weight: 800; font-size: 13px; padding: 4px; border-radius: 4px; margin-bottom: 8px;">
-                    SCHOOL REPAIR & DILAPIDATED BUILDING STATUS
-                </div>
-
-                <div id="pvHeader" style="background: #1e3a8a; color: #fff; padding: 8px 12px; border-radius: 6px; display: grid; grid-template-columns: 1.4fr 1fr 1fr; align-items: center; margin-bottom: 10px;">
-                    <div>
-                        <div id="pvSchName" style="font-weight: 800; font-size: 15px;">{{School Name}}</div>
-                        <div id="pvUdise" style="font-size: 10px; color: #cbd5e1;">UDISE: {{UDISE Code}}</div>
-                    </div>
-                    <div id="pvPanchayat" style="background: #2563eb; padding: 4px 8px; border-radius: 4px; text-align: center; font-weight: 700; font-size: 11px;">
-                        पंचायत: {{Gram Panchayat}}
-                    </div>
-                    <div id="pvBlock" style="background: #f59e0b; color: #0f172a; padding: 4px 8px; border-radius: 4px; text-align: center; font-weight: 800; font-size: 11px;">
-                        जनपद: {{Block Name}}
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 12px; flex-grow: 1;">
-                    <div id="pvDetailsCard" style="background: rgba(248, 250, 252, 0.95); border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; justify-content: space-around;">
-                        <div style="font-size: 12px; font-weight: 800; color: #1e3a8a; border-bottom: 1.5px solid #2563eb; padding-bottom: 2px; margin-bottom: 4px;">📋 SCHOOL DETAILS</div>
-                        <div id="pvDetailsFields" style="font-size: 11px; line-height: 1.5;"></div>
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <div id="pvPhoto1Box" style="flex: 1; background: rgba(241, 245, 249, 0.9); border: 1.5px dashed #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #475569;">
-                            📷 Photo 1 Slot (Pre-Repair / Site)
-                        </div>
-                        <div id="pvPhoto2Box" style="flex: 1; background: rgba(241, 245, 249, 0.9); border: 1.5px dashed #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #475569;">
-                            🔧 Photo 2 Slot (Work Area / Structure)
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 15px;">
-                <button class="btn btn-blue" onclick="goToStep5()"><i class="fa-solid fa-arrow-right"></i> Next: Select Block Filter (Step 05)</button>
-            </div>
-        </div>
-
-        <!-- STEP 05: SELECT BLOCK FILTER -->
-        <div class="card" id="step5Card" style="display: none;">
-            <div class="step-title"><i class="fa-solid fa-filter"></i> Step 05: Select Block Filter</div>
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <label style="font-size: 13px; font-weight: 600;">Block Name Select Karein:</label>
-                <select id="blockFilterSelect" onchange="filterDataByBlock()" style="max-width: 300px; margin: 0;"></select>
-                <button class="btn btn-blue" onclick="goToStep6()"><i class="fa-solid fa-arrow-right"></i> Next: Direct Photo Upload &amp; Entry (Step 06)</button>
-            </div>
-        </div>
-
-        <!-- STEP 06: EXCEL LIST & DIRECT PHOTO UPLOAD (ADMIN + ENGINEER) -->
-        <div class="card" id="step6Card" style="display: none;">
-            <div class="step-title"><i class="fa-solid fa-table-list"></i> Step 06: Excel Uploaded List - Photo Upload (Direct Admin Entry)</div>
-            <p style="font-size: 12px; color: #94a3b8;">(Yahan aap khud bhi har School Row ke liye Photo 1 aur Photo 2 direct browse karke upload kar sakte hain):</p>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">Sr No</th>
-                            <th>School Name / UDISE</th>
-                            <th>Block</th>
-                            <th>Photo 1 (Pre-Repair / Site)</th>
-                            <th>Photo 2 (Work Area / Target)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminPhotoTableBody"></tbody>
-                </table>
-            </div>
-
-            <div style="margin-top: 15px; display: flex; gap: 12px;">
-                <button class="btn btn-blue" onclick="goToStep7()"><i class="fa-solid fa-arrow-right"></i> Next: Sub-Engineer Link Generator (Step 07)</button>
-                <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Final PPTX Export (Editable)</button>
-                <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Printable PDF Export</button>
-            </div>
-        </div>
-
-        <!-- STEP 07: GENERATE SHAREABLE LINK FOR SUB ENGINEERS -->
-        <div class="card" id="step7Card" style="display: none;">
-            <div class="step-title"><i class="fa-solid fa-share-nodes"></i> Step 07: Generate &amp; Share Photo Upload Link for Sub-Engineers</div>
-            <p style="font-size: 12px; color: #94a3b8;">Is link ko Sub-Engineers ke sath share karein. Feeded Mobile Numbers waale Sub-Engineers login karke photo upload entry karenge.</p>
-
-            <div class="portal-link-box">
-                <div>
-                    <strong style="color: #38bdf8;"><i class="fa-solid fa-shield-halved"></i> Real Working Entry Link for New Tab / Sharing:</strong>
-                    <div id="subEngGeneratedLink" style="font-family: monospace; font-size: 12px; color: #4ade80; margin-top: 4px;">Loading Link...</div>
-                </div>
-                <div style="display:flex; gap:8px;">
-                    <button class="btn btn-amber" onclick="copyGeneratedLink()"><i class="fa-solid fa-copy"></i> Copy Link</button>
-                    <button class="btn btn-blue" onclick="openLinkInNewTab()"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open in New Tab</button>
-                </div>
-            </div>
-
-            <!-- SUB-ENGINEER LOGIN PORTAL INTERFACE SIMULATOR -->
-            <div style="background-color: #0f172a; padding: 15px; border-radius: 8px; border: 1px dashed #3b82f6; margin-top: 15px;">
-                <strong style="font-size: 13px; color: #38bdf8;"><i class="fa-solid fa-mobile-screen-button"></i> Sub-Engineer Mobile Login Portal (Simulator):</strong>
+            <!-- STEP 01: TITLE & EXCEL UPLOAD -->
+            <div class="card" id="step1Card">
+                <div class="step-title"><i class="fa-solid fa-file-excel"></i> Step 01: Work PPT Title &amp; Upload Excel File</div>
                 
-                <div style="display: flex; gap: 10px; margin-top: 8px; max-width: 450px;">
-                    <input type="text" id="simEngMobile" class="input-text" placeholder="Sub-Engineer Enter 10-digit Mobile" style="margin:0;">
-                    <button class="btn btn-green" onclick="authenticateSubEngineerSim()"><i class="fa-solid fa-key"></i> Engineer Login</button>
+                <label style="font-size: 11px; font-weight: 600;">Work PPT Title (Editable Banner Text):</label>
+                <input type="text" id="pptWorkTitle" class="input-text" value="SCHOOL REPAIR & DILAPIDATED BUILDING STATUS" style="margin-bottom: 12px;">
+
+                <div class="upload-zone">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 30px; color: #3b82f6; margin-bottom: 6px;"></i>
+                    <p style="font-weight: 600; font-size: 14px;">Select Excel File (.xlsx, .xls) to Import Data</p>
+                    <input type="file" accept=".xlsx, .xls" onchange="processUploadedExcel(event)">
                 </div>
-                <div id="simAuthStatus" style="font-size: 12px; margin-top: 6px; font-weight: 600;"></div>
             </div>
+
+            <!-- STEP 02: SELECT COLUMNS -->
+            <div class="card" id="step2Card" style="display: none;">
+                <div class="step-title"><i class="fa-solid fa-list-check"></i> Step 02: Select Columns for Slide Details Box</div>
+                <div id="columnCheckboxes" class="column-grid"></div>
+                <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Register Sub-Engineers</button>
+            </div>
+
+            <!-- STEP 03: SUB-ENGINEERS REGISTRATION -->
+            <div class="card" id="step3Card" style="display: none;">
+                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Register Authorized Sub-Engineers &amp; Assign Blocks</div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: flex-end; margin-bottom: 10px;">
+                    <div>
+                        <label style="font-size: 11px;">Sub-Engineer Name:</label>
+                        <input type="text" id="engName" class="input-text" placeholder="e.g. Rahul Verma">
+                    </div>
+                    <div>
+                        <label style="font-size: 11px;">Mobile Number (10-Digit):</label>
+                        <input type="text" id="engMobile" class="input-text" placeholder="e.g. 9876543210">
+                    </div>
+                    <div>
+                        <label style="font-size: 11px;">Assigned Block Name:</label>
+                        <input type="text" id="engBlock" class="input-text" placeholder="e.g. Chitrangi">
+                    </div>
+                    <button class="btn btn-green" onclick="addSubEngineer()"><i class="fa-solid fa-user-plus"></i> Add</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Mobile Number</th>
+                                <th>Assigned Block</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="engineerTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 12px;">
+                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-floppy-disk"></i> Save Data &amp; Activate Sub-Engineer Link</button>
+                </div>
+            </div>
+
+            <!-- STEP 04: GENERATE LINK FOR SUB ENGINEERS -->
+            <div class="card" id="step4Card" style="display: none;">
+                <div class="step-title"><i class="fa-solid fa-share-nodes"></i> Step 04: Share Photo Portal Link with Sub-Engineers</div>
+                <p style="font-size: 12px; color: #94a3b8;">Is Link ko copy karke WhatsApp par Sub-Engineers ko bhej dein. Sub-Engineers apne feeded mobile number se login karke photo upload entry karenge.</p>
+
+                <div class="portal-link-box">
+                    <div>
+                        <strong style="color: #38bdf8;"><i class="fa-solid fa-link"></i> Sub-Engineer Photo Portal Link:</strong>
+                        <div id="shareablePortalUrl" style="font-family: monospace; font-size: 12px; color: #4ade80; margin-top: 4px;">...</div>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn btn-amber" onclick="copyShareablePortalLink()"><i class="fa-solid fa-copy"></i> Copy Link</button>
+                        <button class="btn btn-blue" onclick="openShareablePortalLink()"><i class="fa-solid fa-arrow-up-right-from-square"></i> Test Link</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 05: ADMIN DIRECT ENTRY & EXPORT PPT/PDF -->
+            <div class="card" id="step5Card" style="display: none;">
+                <div class="step-title"><i class="fa-solid fa-table-list"></i> Step 05: Admin Live Photo Table &amp; Final PPTX/PDF Export</div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div>
+                        <label style="font-size: 12px; font-weight: 600;">Block Filter:</label>
+                        <select id="adminBlockSelect" onchange="renderAdminPhotoTable()" style="padding: 6px; width: 200px; display: inline-block;"></select>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download Editable PPTX</button>
+                        <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sr No</th>
+                                <th>School Name / UDISE</th>
+                                <th>Block</th>
+                                <th>Photo 1 (Pre-Repair / Site)</th>
+                                <th>Photo 2 (Work Area / Structure)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminPhotoTableBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Live Preview Box -->
+                <div style="font-weight: 700; color: #38bdf8; font-size: 13px; margin-top: 15px;"><i class="fa-solid fa-eye"></i> Live Preview Sheet:</div>
+                <div class="preview-box" id="previewSheet">
+                    <div id="pvWorkBanner" style="background: #1e3a8a; color: #fff; text-align: center; font-weight: 800; font-size: 13px; padding: 4px; border-radius: 4px; margin-bottom: 8px;">
+                        SCHOOL REPAIR & DILAPIDATED BUILDING STATUS
+                    </div>
+
+                    <div id="pvHeader" style="background: #1e3a8a; color: #fff; padding: 8px 12px; border-radius: 6px; display: grid; grid-template-columns: 1.4fr 1fr 1fr; align-items: center; margin-bottom: 10px;">
+                        <div>
+                            <div id="pvSchName" style="font-weight: 800; font-size: 15px;">{{School Name}}</div>
+                            <div id="pvUdise" style="font-size: 10px; color: #cbd5e1;">UDISE: {{UDISE Code}}</div>
+                        </div>
+                        <div id="pvPanchayat" style="background: #2563eb; padding: 4px 8px; border-radius: 4px; text-align: center; font-weight: 700; font-size: 11px;">
+                            पंचायत: {{Gram Panchayat}}
+                        </div>
+                        <div id="pvBlock" style="background: #f59e0b; color: #0f172a; padding: 4px 8px; border-radius: 4px; text-align: center; font-weight: 800; font-size: 11px;">
+                            जनपद: {{Block Name}}
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 12px; flex-grow: 1;">
+                        <div id="pvDetailsCard" style="background: rgba(248, 250, 252, 0.95); border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; justify-content: space-around;">
+                            <div style="font-size: 12px; font-weight: 800; color: #1e3a8a; border-bottom: 1.5px solid #2563eb; padding-bottom: 2px; margin-bottom: 4px;">📋 SCHOOL DETAILS</div>
+                            <div id="pvDetailsFields" style="font-size: 11px; line-height: 1.5;"></div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div id="pvPhoto1Box" style="flex: 1; background: rgba(241, 245, 249, 0.9); border: 1.5px dashed #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #475569;">
+                                📷 Photo 1 Slot
+                            </div>
+                            <div id="pvPhoto2Box" style="flex: 1; background: rgba(241, 245, 249, 0.9); border: 1.5px dashed #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #475569;">
+                                🔧 Photo 2 Slot
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ================= SUB ENGINEER PORTAL MODE ================= -->
+        <div id="engineerPortalPanel" style="display: none;">
+            
+            <div class="card" id="engineerLoginCard">
+                <div class="step-title"><i class="fa-solid fa-mobile-screen-button"></i> Sub-Engineer Security Login</div>
+                <p style="font-size: 12px; color: #94a3b8;">Kripya Admin dwara registered 10-digit Mobile Number daal kar login karein:</p>
+                
+                <div style="display: flex; gap: 8px; margin-top: 10px; max-width: 400px;">
+                    <input type="text" id="engLoginMobile" class="input-text" placeholder="Enter Mobile Number" style="margin:0;">
+                    <button class="btn btn-green" onclick="subEngineerLogin()"><i class="fa-solid fa-key"></i> Login</button>
+                </div>
+                <div id="engLoginStatus" style="font-size: 12px; margin-top: 8px; font-weight: 600;"></div>
+            </div>
+
+            <!-- SUB ENGINEER PHOTO ENTRY TABLE -->
+            <div class="card" id="engineerUploadCard" style="display: none;">
+                <div class="step-title"><i class="fa-solid fa-camera"></i> Photo Upload Entries for Assigned Block</div>
+                <div id="engWelcomeHeader" style="font-size: 13px; color: #38bdf8; margin-bottom: 10px; font-weight: 700;"></div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sr No</th>
+                                <th>School Name / UDISE</th>
+                                <th>Photo 1 (Pre-Repair / Site)</th>
+                                <th>Photo 2 (Work Area / Structure)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="engPhotoTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
     <script>
-        // GLOBAL DATA STORAGE (Admin Controlled)
-        let loadedWorkbook = null;
+        // GLOBAL DATA VARIABLES
+        let excelRowsData = [];
         let selectedColumns = [];
         let registeredEngineers = [
-            { name: "Rahul Verma (Sub-Engineer)", mobile: "9876543210", block: "Chitrangi" },
-            { name: "Amit Sharma (Sub-Engineer)", mobile: "9123456789", block: "Deosar" },
-            { name: "Suresh Patel (Sub-Engineer)", mobile: "9988776655", block: "Waidhan" }
+            { name: "Rahul Verma", mobile: "9876543210", block: "Chitrangi" },
+            { name: "Amit Sharma", mobile: "9123456789", block: "Deosar" }
         ];
-        let rowPhotosMap = {}; // Key: sheetName_rowIndex -> { photo1: base64, photo2: base64 }
-        let currentHeaderBg = "#1e3a8a";
-        let currentBadgeBg = "#2563eb";
+        let rowPhotosMap = {}; // Key: rowIndex -> { photo1, photo2 }
+        let currentLoggedInEng = null;
 
-        // STEP 01: Process Excel
+        // INIT: Check Mode (Admin vs Engineer)
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+
+            if (mode === 'engineer') {
+                // SUB-ENGINEER MODE
+                document.getElementById("adminPanel").style.display = "none";
+                document.getElementById("engineerPortalPanel").style.display = "block";
+                document.getElementById("appHeaderTitle").innerHTML = `<i class="fa-solid fa-camera"></i> Sub-Engineer Photo Entry Portal`;
+                document.getElementById("appHeaderSubtitle").innerText = `Upload Site Photos for Assigned Schools`;
+                loadDataFromLocalStorage();
+            } else {
+                // ADMIN MODE
+                document.getElementById("adminPanel").style.display = "block";
+                document.getElementById("engineerPortalPanel").style.display = "none";
+            }
+        };
+
+        // STEP 01: Process Uploaded Excel
         function processUploadedExcel(e) {
             const file = e.target.files[0];
             if (!file) return;
 
-            showStatus("Excel file read ho rahi hai...", "#38bdf8");
+            showStatus("Reading Excel file data...", "#38bdf8");
             const reader = new FileReader();
 
             reader.onload = function(evt) {
                 const data = new Uint8Array(evt.target.result);
-                loadedWorkbook = XLSX.read(data, { type: 'array' });
+                const wb = XLSX.read(data, { type: 'array' });
 
-                const firstSheet = loadedWorkbook.SheetNames[0];
-                const ws = loadedWorkbook.Sheets[firstSheet];
-                const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                const firstSheet = wb.SheetNames[0];
+                const ws = wb.Sheets[firstSheet];
+                excelRowsData = XLSX.utils.sheet_to_json(ws);
 
-                if (!rows || rows.length === 0) return;
+                const rawHeaders = XLSX.utils.sheet_to_json(ws, { header: 1 })[0];
+                renderColumnCheckboxes(rawHeaders);
 
-                renderColumnCheckboxes(rows[0]);
                 document.getElementById("step2Card").style.display = "block";
-                showStatus("✅ Excel File Successfully Loaded! Ab Step 02 me Columns Select Karein.", "#4ade80");
+                showStatus("✅ Excel Loaded Successfully! Step 02 me Columns Select Karein.", "#4ade80");
             };
-
             reader.readAsArrayBuffer(file);
         }
 
-        // STEP 02: Render Columns
+        // STEP 02: Column Checkboxes
         function renderColumnCheckboxes(headers) {
             const container = document.getElementById("columnCheckboxes");
             container.innerHTML = "";
@@ -446,17 +455,17 @@
 
             document.getElementById("step3Card").style.display = "block";
             renderEngineerTable();
-            showStatus("✅ Columns Selected! Step 03 me Sub-Engineers ki details feed karein.", "#4ade80");
+            showStatus("✅ Columns Selected! Step 03 me Sub-Engineers feed karein.", "#4ade80");
         }
 
-        // STEP 03: Engineer Registration System
+        // STEP 03: Register Engineers
         function addSubEngineer() {
             const name = document.getElementById("engName").value.trim();
             const mobile = document.getElementById("engMobile").value.trim();
             const block = document.getElementById("engBlock").value.trim();
 
             if (!name || !mobile || !block) {
-                alert("Kripya Name, Mobile Number aur Assigned Block teeno bharein!");
+                alert("Teeno fields bharein!");
                 return;
             }
 
@@ -472,62 +481,125 @@
             tbody.innerHTML = "";
 
             registeredEngineers.forEach((eng, idx) => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td><strong>${eng.name}</strong></td>
-                    <td><span style="font-family: monospace; color:#38bdf8;">${eng.mobile}</span></td>
-                    <td><span style="background:#2563eb; padding:2px 8px; border-radius:4px; font-weight:700;">${eng.block}</span></td>
-                    <td><button class="btn btn-red" style="padding:4px 8px; font-size:11px;" onclick="deleteEngineer(${idx})"><i class="fa-solid fa-trash"></i></button></td>
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${eng.name}</strong></td>
+                        <td><span style="font-family:monospace; color:#38bdf8;">${eng.mobile}</span></td>
+                        <td><span style="background:#2563eb; padding:2px 6px; border-radius:4px; font-weight:700;">${eng.block}</span></td>
+                        <td><button class="btn btn-red" style="padding:3px 6px; font-size:10px;" onclick="deleteEng(${idx})"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
-        function deleteEngineer(idx) {
+        function deleteEng(idx) {
             registeredEngineers.splice(idx, 1);
             renderEngineerTable();
         }
 
-        function goToStep4() {
+        // SAVE DATA TO LOCAL STORAGE & ACTIVATE LINK
+        function saveAdminDataAndEnablePortal() {
+            const adminDataPackage = {
+                excelRowsData: excelRowsData,
+                selectedColumns: selectedColumns,
+                registeredEngineers: registeredEngineers,
+                pptWorkTitle: document.getElementById("pptWorkTitle").value,
+                rowPhotosMap: rowPhotosMap
+            };
+
+            localStorage.setItem("SCHOOL_PPT_DATA_PACKAGE", JSON.stringify(adminDataPackage));
+
+            // Generate Working Portal Link with query parameter mode=engineer
+            const baseUrl = window.location.href.split('?')[0];
+            const engineerPortalUrl = `${baseUrl}?mode=engineer`;
+
+            document.getElementById("shareablePortalUrl").innerText = engineerPortalUrl;
             document.getElementById("step4Card").style.display = "block";
+            document.getElementById("step5Card").style.display = "block";
+
+            populateAdminBlockDropdown();
+            renderAdminPhotoTable();
             updatePreviewSheet();
+
+            showStatus("🎉 Data Saved! Sub-Engineer Shareable Link is Active.", "#4ade80");
         }
 
-        // STEP 04: Themes & Google Image Background
-        function setTheme(headerBg, badgeBg) {
-            currentHeaderBg = headerBg;
-            currentBadgeBg = badgeBg;
-            document.getElementById("pvWorkBanner").style.background = headerBg;
-            document.getElementById("pvHeader").style.background = headerBg;
-            document.getElementById("pvPanchayat").style.background = badgeBg;
+        function copyShareablePortalLink() {
+            const linkText = document.getElementById("shareablePortalUrl").innerText;
+            navigator.clipboard.writeText(linkText);
+            alert("Sub-Engineer Photo Portal Link Copied!");
         }
 
-        function applyOnlineBgImage() {
-            const url = document.getElementById("bgImageUrl").value.trim();
-            const pv = document.getElementById("previewSheet");
-            if (url) {
-                pv.style.backgroundImage = `url('${url}')`;
-            } else {
-                pv.style.backgroundImage = "none";
-            }
+        function openShareablePortalLink() {
+            const linkText = document.getElementById("shareablePortalUrl").innerText;
+            window.open(linkText, '_blank');
+        }
+
+        // STEP 05: Admin Live Table & Preview
+        function populateAdminBlockDropdown() {
+            const select = document.getElementById("adminBlockSelect");
+            select.innerHTML = `<option value="ALL">All Blocks Combined</option>`;
+
+            const blocks = [...new Set(excelRowsData.map(r => r['block_name'] || r['जनपद'] || 'Main'))];
+            blocks.forEach(b => {
+                select.innerHTML += `<option value="${b}">${b}</option>`;
+            });
+        }
+
+        function renderAdminPhotoTable() {
+            const filter = document.getElementById("adminBlockSelect").value;
+            const tbody = document.getElementById("adminPhotoTableBody");
+            tbody.innerHTML = "";
+
+            excelRowsData.forEach((row, idx) => {
+                const block = row['block_name'] || row['जनपद'] || 'Main';
+                if (filter !== "ALL" && block !== filter) return;
+
+                const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
+                const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
+                const srNo = row['Sr'] || row['Sr. No.'] || (idx + 1);
+
+                if (!rowPhotosMap[idx]) rowPhotosMap[idx] = { photo1: null, photo2: null };
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${srNo}</strong></td>
+                        <td><strong>${schName}</strong><br><span style="color:#94a3b8; font-size:10px;">${udise}</span></td>
+                        <td><span style="background:#f59e0b; color:#0f172a; padding:2px 6px; border-radius:4px; font-weight:700;">${block}</span></td>
+                        <td>
+                            <input type="file" accept="image/*" onchange="handleAdminPhotoUpload(event, ${idx}, 'photo1')">
+                            <span id="admin_p1_thumb_${idx}">${rowPhotosMap[idx].photo1 ? `<img src="${rowPhotosMap[idx].photo1}" class="img-thumb">` : ''}</span>
+                        </td>
+                        <td>
+                            <input type="file" accept="image/*" onchange="handleAdminPhotoUpload(event, ${idx}, 'photo2')">
+                            <span id="admin_p2_thumb_${idx}">${rowPhotosMap[idx].photo2 ? `<img src="${rowPhotosMap[idx].photo2}" class="img-thumb">` : ''}</span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function handleAdminPhotoUpload(e, idx, photoType) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                rowPhotosMap[idx][photoType] = evt.target.result;
+                document.getElementById(`admin_${photoType === 'photo1' ? 'p1' : 'p2'}_thumb_${idx}`).innerHTML = `<img src="${evt.target.result}" class="img-thumb">`;
+                syncDataToLocalStorage();
+            };
+            reader.readAsDataURL(file);
         }
 
         function updatePreviewSheet() {
-            const workTitle = document.getElementById("pptWorkTitle").value;
-            document.getElementById("pvWorkBanner").innerText = workTitle;
-
-            if (!loadedWorkbook) return;
-            const sheetName = loadedWorkbook.SheetNames[0];
-            const ws = loadedWorkbook.Sheets[sheetName];
-            const rows = XLSX.utils.sheet_to_json(ws);
-
-            if (rows.length === 0) return;
-            const firstRow = rows[0];
+            if (excelRowsData.length === 0) return;
+            const firstRow = excelRowsData[0];
 
             document.getElementById("pvSchName").innerText = firstRow['school_name'] || firstRow['School Name in Hindi'] || 'Sample School';
             document.getElementById("pvUdise").innerText = "UDISE: " + (firstRow['udise_sch_code'] || firstRow['UDISE Code'] || '123456');
             document.getElementById("pvPanchayat").innerText = "पंचायत: " + (firstRow['Panchayat Name'] || firstRow['ग्राम पंचायत'] || 'Gram Panchayat');
-            document.getElementById("pvBlock").innerText = "जनपद: " + (firstRow['block_name'] || firstRow['जनपद'] || sheetName);
+            document.getElementById("pvBlock").innerText = "जनपद: " + (firstRow['block_name'] || firstRow['जनपद'] || 'Block');
 
             const fieldsContainer = document.getElementById("pvDetailsFields");
             fieldsContainer.innerHTML = `<div><strong>• Sr No. (क्र.):</strong> <span style="color:#1d4ed8;">${firstRow['Sr'] || 1}</span></div>`;
@@ -536,180 +608,159 @@
             });
         }
 
-        function goToStep5() {
-            document.getElementById("step5Card").style.display = "block";
-            populateBlockFilterDropdown();
+
+        // ================= SUB ENGINEER PORTAL LOGIC =================
+        function loadDataFromLocalStorage() {
+            const savedPkg = localStorage.getItem("SCHOOL_PPT_DATA_PACKAGE");
+            if (savedPkg) {
+                const pkg = JSON.parse(savedPkg);
+                excelRowsData = pkg.excelRowsData || [];
+                selectedColumns = pkg.selectedColumns || [];
+                registeredEngineers = pkg.registeredEngineers || [];
+                rowPhotosMap = pkg.rowPhotosMap || {};
+            } else {
+                showStatus("⚠️ Admin dwara abhi tak Excel Data Save nahi kiya gaya hai!", "#f87171");
+            }
         }
 
-        // STEP 05: Block Filter
-        function populateBlockFilterDropdown() {
-            const select = document.getElementById("blockFilterSelect");
-            select.innerHTML = `<option value="ALL">All Blocks Combined</option>`;
+        function subEngineerLogin() {
+            const mob = document.getElementById("engLoginMobile").value.trim();
+            loadDataFromLocalStorage();
 
-            loadedWorkbook.SheetNames.forEach(sName => {
-                const opt = document.createElement("option");
-                opt.value = sName;
-                opt.innerText = sName;
-                select.appendChild(opt);
-            });
+            const eng = registeredEngineers.find(e => String(e.mobile).trim() === mob);
+            const statusDiv = document.getElementById("engLoginStatus");
+
+            if (eng) {
+                currentLoggedInEng = eng;
+                statusDiv.style.color = "#4ade80";
+                statusDiv.innerHTML = `<i class="fa-solid fa-circle-check"></i> Welcome <strong>${eng.name}</strong>! Assigned Block: <strong>${eng.block}</strong>`;
+                document.getElementById("engineerUploadCard").style.display = "block";
+                document.getElementById("engWelcomeHeader").innerText = `Schools List for Block: ${eng.block}`;
+                renderEngineerPhotoUploadTable();
+            } else {
+                currentLoggedInEng = null;
+                statusDiv.style.color = "#f87171";
+                statusDiv.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Access Denied! Mobile Number '${mob}' Admin dwara feeded nahi hai.`;
+                document.getElementById("engineerUploadCard").style.display = "none";
+            }
         }
 
-        function goToStep6() {
-            document.getElementById("step6Card").style.display = "block";
-            renderAdminPhotoTable();
-        }
-
-        // STEP 06: Admin Direct Photo Upload
-        function renderAdminPhotoTable() {
-            const filter = document.getElementById("blockFilterSelect").value;
-            const tbody = document.getElementById("adminPhotoTableBody");
+        function renderEngineerPhotoUploadTable() {
+            const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
 
-            let targetSheets = filter === "ALL" ? loadedWorkbook.SheetNames : [filter];
+            excelRowsData.forEach((row, idx) => {
+                const block = row['block_name'] || row['जनपद'] || '';
+                // Show rows matching Sub-Engineer's Assigned Block
+                if (currentLoggedInEng && String(block).toLowerCase().trim() !== String(currentLoggedInEng.block).toLowerCase().trim()) {
+                    return;
+                }
 
-            targetSheets.forEach(sName => {
-                const ws = loadedWorkbook.Sheets[sName];
-                const rows = XLSX.utils.sheet_to_json(ws);
+                const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
+                const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
+                const srNo = row['Sr'] || row['Sr. No.'] || (idx + 1);
 
-                rows.forEach((row, idx) => {
-                    const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
-                    const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
-                    const block = row['block_name'] || row['जनपद'] || sName;
-                    const srNo = row['Sr'] || row['Sr. No.'] || (idx + 1);
+                if (!rowPhotosMap[idx]) rowPhotosMap[idx] = { photo1: null, photo2: null };
 
-                    const rowKey = `${sName}_${idx}`;
-                    if (!rowPhotosMap[rowKey]) rowPhotosMap[rowKey] = { photo1: null, photo2: null };
-
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
+                tbody.innerHTML += `
+                    <tr>
                         <td><strong>${srNo}</strong></td>
-                        <td><strong>${schName}</strong><br><span style="color:#94a3b8; font-size:10px;">UDISE: ${udise}</span></td>
-                        <td><span style="background:#f59e0b; color:#0f172a; padding:2px 6px; border-radius:4px; font-weight:700;">${block}</span></td>
+                        <td><strong>${schName}</strong><br><span style="color:#94a3b8; font-size:10px;">${udise}</span></td>
                         <td>
-                            <input type="file" accept="image/*" onchange="handlePhotoUpload(event, '${rowKey}', 'photo1')">
-                            <span id="p1_thumb_${rowKey}">${rowPhotosMap[rowKey].photo1 ? `<img src="${rowPhotosMap[rowKey].photo1}" class="img-thumb">` : ''}</span>
+                            <input type="file" accept="image/*" onchange="handleEngineerPhotoUpload(event, ${idx}, 'photo1')">
+                            <span id="eng_p1_thumb_${idx}">${rowPhotosMap[idx].photo1 ? `<img src="${rowPhotosMap[idx].photo1}" class="img-thumb">` : ''}</span>
                         </td>
                         <td>
-                            <input type="file" accept="image/*" onchange="handlePhotoUpload(event, '${rowKey}', 'photo2')">
-                            <span id="p2_thumb_${rowKey}">${rowPhotosMap[rowKey].photo2 ? `<img src="${rowPhotosMap[rowKey].photo2}" class="img-thumb">` : ''}</span>
+                            <input type="file" accept="image/*" onchange="handleEngineerPhotoUpload(event, ${idx}, 'photo2')">
+                            <span id="eng_p2_thumb_${idx}">${rowPhotosMap[idx].photo2 ? `<img src="${rowPhotosMap[idx].photo2}" class="img-thumb">` : ''}</span>
                         </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+                    </tr>
+                `;
             });
         }
 
-        function handlePhotoUpload(e, rowKey, photoType) {
+        function handleEngineerPhotoUpload(e, idx, photoType) {
             const file = e.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
             reader.onload = function(evt) {
-                rowPhotosMap[rowKey][photoType] = evt.target.result;
-                const thumbSpan = document.getElementById(`${photoType === 'photo1' ? 'p1' : 'p2'}_thumb_${rowKey}`);
-                thumbSpan.innerHTML = `<img src="${evt.target.result}" class="img-thumb">`;
+                rowPhotosMap[idx][photoType] = evt.target.result;
+                document.getElementById(`eng_${photoType === 'photo1' ? 'p1' : 'p2'}_thumb_${idx}`).innerHTML = `<img src="${evt.target.result}" class="img-thumb">`;
+                syncDataToLocalStorage();
             };
             reader.readAsDataURL(file);
         }
 
-        function goToStep7() {
-            document.getElementById("step7Card").style.display = "block";
-            
-            // Set dynamic working URL based on current environment
-            const currentUrl = window.location.href;
-            document.getElementById("subEngGeneratedLink").innerText = currentUrl;
-        }
-
-        // STEP 07: Sub Engineer Simulator Login & Share
-        function authenticateSubEngineerSim() {
-            const mob = document.getElementById("simEngMobile").value.trim();
-            const eng = registeredEngineers.find(e => e.mobile === mob);
-            const statusDiv = document.getElementById("simAuthStatus");
-
-            if (eng) {
-                statusDiv.style.color = "#4ade80";
-                statusDiv.innerHTML = `<i class="fa-solid fa-circle-check"></i> Sub-Engineer Authorized! Welcome <strong>${eng.name}</strong> (Assigned Block: <strong>${eng.block}</strong>). Step 06 table me photo entry enabled.`;
-            } else {
-                statusDiv.style.color = "#f87171";
-                statusDiv.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Access Denied! Mobile Number '${mob}' is not registered by Admin in Step 03.`;
+        function syncDataToLocalStorage() {
+            const savedPkg = localStorage.getItem("SCHOOL_PPT_DATA_PACKAGE");
+            if (savedPkg) {
+                let pkg = JSON.parse(savedPkg);
+                pkg.rowPhotosMap = rowPhotosMap;
+                localStorage.setItem("SCHOOL_PPT_DATA_PACKAGE", JSON.stringify(pkg));
             }
         }
 
-        function copyGeneratedLink() {
-            const linkText = document.getElementById("subEngGeneratedLink").innerText;
-            navigator.clipboard.writeText(linkText);
-            alert("Working Portal Link Copied to Clipboard!");
-        }
-
-        function openLinkInNewTab() {
-            window.open(window.location.href, '_blank');
-        }
-
-        // EXPORT editable PPTX
+        // EXPORT PPTX
         function exportPPTX() {
-            const filter = document.getElementById("blockFilterSelect").value;
+            const filter = document.getElementById("adminBlockSelect").value;
             const workTitle = document.getElementById("pptWorkTitle").value;
 
-            showStatus(`Generating Editable PPTX Presentation...`, "#38bdf8");
+            showStatus("Generating Editable PPTX...", "#38bdf8");
 
             let pptx = new PptxGenJS();
             pptx.defineLayout({ name: 'A4_LANDSCAPE', width: 11.69, height: 8.27 });
             pptx.layout = 'A4_LANDSCAPE';
 
-            let targetSheets = filter === "ALL" ? loadedWorkbook.SheetNames : [filter];
+            excelRowsData.forEach((row, idx) => {
+                const block = row['block_name'] || row['जनपद'] || 'Main';
+                if (filter !== "ALL" && block !== filter) return;
 
-            targetSheets.forEach(sName => {
-                const ws = loadedWorkbook.Sheets[sName];
-                const rows = XLSX.utils.sheet_to_json(ws);
+                const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'];
+                const udise = row['udise_sch_code'] || row['UDISE Code'];
+                if (!schName && !udise) return;
 
-                rows.forEach((row, idx) => {
-                    const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'];
-                    const udise = row['udise_sch_code'] || row['UDISE Code'];
-                    if (!schName && !udise) return;
+                let slide = pptx.addSlide();
+                const photos = rowPhotosMap[idx] || { photo1: null, photo2: null };
 
-                    let slide = pptx.addSlide();
-                    const rowKey = `${sName}_${idx}`;
-                    const photos = rowPhotosMap[rowKey] || { photo1: null, photo2: null };
+                // Top Work Title Banner
+                slide.addShape(pptx.ShapeType.rect, { x: 0.4, y: 0.2, w: 10.89, h: 0.4, fill: { color: "1E3A8A" } });
+                slide.addText(workTitle, { x: 0.4, y: 0.2, w: 10.89, h: 0.4, align: "center", fontSize: 13, bold: true, color: "FFFFFF" });
 
-                    // Top Work Title Banner (Editable)
-                    slide.addShape(pptx.ShapeType.rect, { x: 0.4, y: 0.2, w: 10.89, h: 0.4, fill: { color: "1E3A8A" } });
-                    slide.addText(workTitle, { x: 0.4, y: 0.2, w: 10.89, h: 0.4, align: "center", fontSize: 13, bold: true, color: "FFFFFF" });
+                // Header Banner
+                slide.addShape(pptx.ShapeType.rect, { x: 0.4, y: 0.65, w: 10.89, h: 0.9, fill: { color: "1E3A8A" } });
+                slide.addText(String(schName || ''), { x: 0.5, y: 0.7, w: 4.8, h: 0.4, fontSize: 16, bold: true, color: "FFFFFF", autoFit: true });
+                slide.addText("UDISE Code: " + String(udise || ''), { x: 0.5, y: 1.1, w: 4.8, h: 0.3, fontSize: 11, bold: true, color: "CBD5E1" });
 
-                    // Header Banner
-                    slide.addShape(pptx.ShapeType.rect, { x: 0.4, y: 0.65, w: 10.89, h: 0.9, fill: { color: "1E3A8A" } });
-                    slide.addText(String(schName || ''), { x: 0.5, y: 0.7, w: 4.8, h: 0.4, fontSize: 16, bold: true, color: "FFFFFF", autoFit: true });
-                    slide.addText("UDISE Code: " + String(udise || ''), { x: 0.5, y: 1.1, w: 4.8, h: 0.3, fontSize: 11, bold: true, color: "CBD5E1" });
+                // Details Card
+                slide.addShape(pptx.ShapeType.roundRect, { x: 0.4, y: 1.65, w: 5.6, h: 6.2, fill: { color: "F8FAFC" }, line: { color: "CBD5E1", width: 1.5 } });
+                slide.addText("📋 SCHOOL DETAILS", { x: 0.55, y: 1.75, w: 5.3, h: 0.4, fontSize: 14, bold: true, color: "1E3A8A" });
 
-                    // Details Card
-                    slide.addShape(pptx.ShapeType.roundRect, { x: 0.4, y: 1.65, w: 5.6, h: 6.2, fill: { color: "F8FAFC" }, line: { color: "CBD5E1", width: 1.5 } });
-                    slide.addText("📋 SCHOOL DETAILS", { x: 0.55, y: 1.75, w: 5.3, h: 0.4, fontSize: 14, bold: true, color: "1E3A8A" });
+                let rowFields = [{ label: "• Sr No. (क्र.): ", val: row['Sr'] || (idx + 1) }];
+                selectedColumns.forEach(col => rowFields.push({ label: `• ${col}: `, val: row[col] || '' }));
 
-                    let rowFields = [{ label: "• Sr No. (क्र.): ", val: row['Sr'] || (idx + 1) }];
-                    selectedColumns.forEach(col => rowFields.push({ label: `• ${col}: `, val: row[col] || '' }));
-
-                    const startY = 2.2;
-                    const stepY = 5.4 / rowFields.length;
-                    rowFields.forEach((f, fIdx) => {
-                        slide.addText([
-                            { text: f.label, options: { fontSize: 13, bold: true, color: "0F172A" } },
-                            { text: String(f.val), options: { fontSize: 13, bold: true, color: "1D4ED8" } }
-                        ], { x: 0.55, y: startY + (fIdx * stepY), w: 5.3, h: stepY, autoFit: true });
-                    });
-
-                    // Photos
-                    if (photos.photo1) slide.addImage({ data: photos.photo1, x: 6.3, y: 1.65, w: 5.0, h: 3.0 });
-                    else slide.addShape(pptx.ShapeType.roundRect, { x: 6.3, y: 1.65, w: 5.0, h: 3.0, fill: { color: "F1F5F9" } });
-
-                    if (photos.photo2) slide.addImage({ data: photos.photo2, x: 6.3, y: 4.85, w: 5.0, h: 3.0 });
-                    else slide.addShape(pptx.ShapeType.roundRect, { x: 6.3, y: 4.85, w: 5.0, h: 3.0, fill: { color: "F1F5F9" } });
+                const startY = 2.2;
+                const stepY = 5.4 / rowFields.length;
+                rowFields.forEach((f, fIdx) => {
+                    slide.addText([
+                        { text: f.label, options: { fontSize: 13, bold: true, color: "0F172A" } },
+                        { text: String(f.val), options: { fontSize: 13, bold: true, color: "1D4ED8" } }
+                    ], { x: 0.55, y: startY + (fIdx * stepY), w: 5.3, h: stepY, autoFit: true });
                 });
+
+                // Photos
+                if (photos.photo1) slide.addImage({ data: photos.photo1, x: 6.3, y: 1.65, w: 5.0, h: 3.0 });
+                else slide.addShape(pptx.ShapeType.roundRect, { x: 6.3, y: 1.65, w: 5.0, h: 3.0, fill: { color: "F1F5F9" } });
+
+                if (photos.photo2) slide.addImage({ data: photos.photo2, x: 6.3, y: 4.85, w: 5.0, h: 3.0 });
+                else slide.addShape(pptx.ShapeType.roundRect, { x: 6.3, y: 4.85, w: 5.0, h: 3.0, fill: { color: "F1F5F9" } });
             });
 
             pptx.writeFile({ fileName: `School_Presentation_${filter}.pptx` })
                 .then(() => showStatus(`🎉 PPTX Exported Successfully!`, "#4ade80"));
         }
 
-        // Export PDF
+        // EXPORT PDF
         function exportPDF() {
             const element = document.getElementById("previewSheet");
             showStatus("Generating PDF...", "#38bdf8");
