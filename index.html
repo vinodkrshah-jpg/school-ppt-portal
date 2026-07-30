@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v20.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v21.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -228,14 +228,14 @@
         </div>
     </div>
 
-    <!-- HIDDEN RENDER CONTAINER FOR FULL PDF EXPORT -->
+    <!-- HIDDEN RENDER CONTAINER FOR PDF PAGES -->
     <div id="pdfRenderContainer" style="position: absolute; left: -9999px; top: -9999px; width: 1122px; height: 793px;"></div>
 
     <div class="container">
         
         <div class="app-header">
             <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Full Multi-Page PDF &amp; PPTX Export System</p>
+            <p id="appHeaderSubtitle">Direct Browser/Windows Native File Download Flow</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -322,7 +322,7 @@
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download PPTX</button>
-                        <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF (100% Rows Multi-Page)</button>
+                        <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF (100% Rows)</button>
                     </div>
                 </div>
 
@@ -553,9 +553,7 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            showStatus("Reading Excel file structure...", "#38bdf8");
             const reader = new FileReader();
-
             reader.onload = function(evt) {
                 const data = new Uint8Array(evt.target.result);
                 workbookGlobal = XLSX.read(data, { type: 'array' });
@@ -572,7 +570,6 @@
                 });
 
                 document.getElementById("sheetModalOverlay").style.display = "flex";
-                showStatus("📋 Dialogue Opened: Select Sheets to Import.", "#38bdf8");
             };
             reader.readAsArrayBuffer(file);
         }
@@ -611,7 +608,6 @@
             populateBlockDropdowns();
 
             document.getElementById("step2Card").style.display = "block";
-            showStatus(`✅ ${selectedSheetNames.length} Sheet(s) Imported Successfully! Proceeding to Step 02.`, "#4ade80");
         }
 
         // STEP 02: Column Checkboxes
@@ -640,7 +636,6 @@
             }
 
             document.getElementById("step3Card").style.display = "block";
-            showStatus("✅ Columns Selected! Step 03 me Sample PPT Theme File/Image Browse karein.", "#4ade80");
         }
 
         // STEP 03: SAMPLE PPT FILE OR IMAGE THEME IMPORT
@@ -655,8 +650,6 @@
                 previewEl.style.backgroundImage = `url('${themeBgImage}')`;
                 previewEl.style.backgroundSize = "cover";
                 previewEl.style.backgroundPosition = "center";
-                
-                showStatus(`🎨 Theme Applied from '${file.name}'! Check Live Preview below.`, "#4ade80");
             };
             reader.readAsDataURL(file);
         }
@@ -681,7 +674,6 @@
                 changeHeaderColor("#991b1b");
                 previewEl.style.backgroundColor = "#fef2f2";
             }
-            showStatus(`🎨 Preset Theme '${styleKey}' Applied to Preview!`, "#4ade80");
         }
 
         function changeHeaderColor(colorVal) {
@@ -731,7 +723,7 @@
                                 totalProcessed++;
                                 if (totalProcessed === files.length) {
                                     renderAdminPhotoTable();
-                                    document.getElementById("bulkUploadStatus").innerText = `🎉 Successfully Matched & Uploaded ${matchedCount} Photos!`;
+                                    document.getElementById("bulkUploadStatus").innerText = `🎉 Matched & Loaded ${matchedCount} Photos!`;
                                 }
                             };
                             reader.readAsDataURL(file);
@@ -746,11 +738,9 @@
             if (wantSubEngineers) {
                 document.getElementById("step6Card").style.display = "block";
                 populateBlockDropdowns();
-                showStatus("Step 06: Sub-Engineer Registration Unlocked.", "#38bdf8");
             } else {
                 document.getElementById("step6Card").style.display = "none";
                 document.getElementById("step7Card").style.display = "none";
-                showStatus("🎉 Process Complete at Admin Level! You can download PPTX/PDF now.", "#4ade80");
             }
         }
 
@@ -828,8 +818,6 @@
 
             document.getElementById("shareablePortalUrl").innerText = engineerPortalUrl;
             document.getElementById("step7Card").style.display = "block";
-
-            showStatus("🎉 Data Saved Package Created! Shareable Link is Active in Step 07.", "#4ade80");
         }
 
         function copyShareablePortalLink() {
@@ -961,10 +949,8 @@
                 registeredEngineers = pkg.registeredEngineers && pkg.registeredEngineers.length > 0 ? pkg.registeredEngineers : DEFAULT_ENGINEERS;
                 if (pkg.themeBgImage) themeBgImage = pkg.themeBgImage;
                 if (pkg.themeHeaderColor) themeHeaderColor = pkg.themeHeaderColor;
-                showStatus("✅ Data Loaded Successfully! Mobile Number se Login Karein.", "#4ade80");
             } else {
                 registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
-                showStatus("⚠️ Notice: Link kholne se pehle Admin dwara Step 03 me Save Data package nahi banaya gaya tha.", "#f59e0b");
             }
         }
 
@@ -1072,12 +1058,10 @@
             reader.readAsDataURL(file);
         }
 
-        // EXPORT PPTX
+        // NATIVE DIRECT DOWNLOAD EXPORT PPTX
         function exportPPTX() {
             const filter = document.getElementById("adminBlockSelect").value;
             const workTitle = document.getElementById("pptWorkTitle").value;
-
-            showStatus("Generating Editable PPTX...", "#38bdf8");
 
             let pptx = new PptxGenJS();
             pptx.defineLayout({ name: 'A4_LANDSCAPE', width: 11.69, height: 8.27 });
@@ -1094,21 +1078,17 @@
                 let slide = pptx.addSlide();
                 const photos = rowPhotosMap[idx] || { photo1: null, photo2: null };
 
-                // Background Theme Image
                 if (themeBgImage) {
                     slide.addImage({ data: themeBgImage, x: 0, y: 0, w: 11.69, h: 8.27 });
                 }
 
-                // Top Work Title Banner
                 slide.addShape(pptx.ShapeType.rect, { x: 0.4, y: 0.2, w: 10.89, h: 0.4, fill: { color: themeHeaderColor.replace('#','') } });
                 slide.addText(workTitle, { x: 0.4, y: 0.2, w: 10.89, h: 0.4, align: "center", fontSize: 13, bold: true, color: "FFFFFF" });
 
-                // Header Banner
                 slide.addShape(pptx.ShapeType.rect, { x: 0.4, y: 0.65, w: 10.89, h: 0.9, fill: { color: themeHeaderColor.replace('#','') } });
                 slide.addText(String(schName || ''), { x: 0.5, y: 0.7, w: 4.8, h: 0.4, fontSize: 16, bold: true, color: "FFFFFF", autoFit: true });
                 slide.addText("UDISE Code: " + String(udise || ''), { x: 0.5, y: 1.1, w: 4.8, h: 0.3, fontSize: 11, bold: true, color: "CBD5E1" });
 
-                // Details Card
                 slide.addShape(pptx.ShapeType.roundRect, { x: 0.4, y: 1.65, w: 5.6, h: 6.2, fill: { color: "F8FAFC" }, line: { color: "CBD5E1", width: 1.5 } });
                 slide.addText("📋 SCHOOL DETAILS", { x: 0.55, y: 1.75, w: 5.3, h: 0.4, fontSize: 14, bold: true, color: "1E3A8A" });
 
@@ -1124,7 +1104,6 @@
                     ], { x: 0.55, y: startY + (fIdx * stepY), w: 5.3, h: stepY, autoFit: true });
                 });
 
-                // Photos
                 if (photos.photo1) slide.addImage({ data: photos.photo1, x: 6.3, y: 1.65, w: 5.0, h: 3.0 });
                 else slide.addShape(pptx.ShapeType.roundRect, { x: 6.3, y: 1.65, w: 5.0, h: 3.0, fill: { color: "F1F5F9" } });
 
@@ -1132,11 +1111,11 @@
                 else slide.addShape(pptx.ShapeType.roundRect, { x: 6.3, y: 4.85, w: 5.0, h: 3.0, fill: { color: "F1F5F9" } });
             });
 
-            pptx.writeFile({ fileName: `School_Presentation_${filter}.pptx` })
-                .then(() => showStatus(`🎉 PPTX Exported Successfully!`, "#4ade80"));
+            // Trigger Direct Browser Native Download
+            pptx.writeFile({ fileName: `School_Presentation_${filter}.pptx` });
         }
 
-        // FULL 100% ROWS MULTI-PAGE PDF EXPORT ENGINE
+        // NATIVE DIRECT DOWNLOAD MULTI-PAGE PDF EXPORT ENGINE
         async function exportPDF() {
             const filter = document.getElementById("adminBlockSelect").value;
             const workTitle = document.getElementById("pptWorkTitle").value;
@@ -1152,8 +1131,6 @@
                 return;
             }
 
-            showStatus(`Generating 100% Multi-Page PDF for ${targetRows.length} Rows... Please wait.`, "#38bdf8");
-
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('landscape', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -1168,7 +1145,6 @@
                 const block = extractBlockName(row) || 'Block';
                 const photos = rowPhotosMap[originalIdx] || { photo1: null, photo2: null };
 
-                // Build HTML for current page
                 let fieldsHtml = `<div><strong>• Sr No. (क्र.):</strong> <span style="color:#1d4ed8;">${row['Sr'] || (i + 1)}</span></div>`;
                 selectedColumns.forEach(col => {
                     fieldsHtml += `<div><strong>• ${col}:</strong> <span style="color:#1d4ed8;">${row[col] || ''}</span></div>`;
@@ -1204,18 +1180,17 @@
                     </div>
                 `;
 
-                // Capture canvas
-                const canvas = await html2canvas(renderContainer, { scale: 2, useCORS: true });
+                const canvas = await html2canvas(renderContainer, { scale: 1.5, useCORS: true });
                 const imgData = canvas.toDataURL('image/png');
 
                 if (i > 0) pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                showStatus(`Processed Page ${i + 1} of ${targetRows.length}...`, "#38bdf8");
             }
 
             renderContainer.innerHTML = "";
+            
+            // Trigger Direct Browser Native Download Box
             pdf.save(`School_Presentation_${filter}.pdf`);
-            showStatus(`🎉 Full Multi-Page PDF (${targetRows.length} Pages) Downloaded Successfully!`, "#4ade80");
         }
 
         function showStatus(msg, color) {
