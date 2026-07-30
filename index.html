@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v21.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v22.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -235,7 +235,7 @@
         
         <div class="app-header">
             <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Direct Browser/Windows Native File Download Flow</p>
+            <p id="appHeaderSubtitle">Native Windows "Save As" File Picker System</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -321,8 +321,8 @@
                         <select id="adminBlockSelect" onchange="renderAdminPhotoTable()" style="padding: 6px; width: 220px; display: inline-block;"></select>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download PPTX</button>
-                        <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF (100% Rows)</button>
+                        <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Save PPTX (Windows Picker)</button>
+                        <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Save PDF (Windows Picker)</button>
                     </div>
                 </div>
 
@@ -1058,8 +1058,35 @@
             reader.readAsDataURL(file);
         }
 
-        // NATIVE DIRECT DOWNLOAD EXPORT PPTX
-        function exportPPTX() {
+        // UNIVERSAL FILE SAVER WITH WINDOWS NATIVE SAVE AS PICKER
+        async function saveFileNative(blob, defaultFileName, extensions) {
+            if ('showSaveFilePicker' in window) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: defaultFileName,
+                        types: [{ description: 'Document File', accept: extensions }]
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(blob);
+                    await writable.close();
+                    return;
+                } catch (err) {
+                    if (err.name === 'AbortError') return; // User cancelled
+                }
+            }
+            // Fallback for standard download
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = defaultFileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // EXPORT PPTX USING NATIVE WINDOWS SAVE AS DIALOG
+        async function exportPPTX() {
             const filter = document.getElementById("adminBlockSelect").value;
             const workTitle = document.getElementById("pptWorkTitle").value;
 
@@ -1111,11 +1138,11 @@
                 else slide.addShape(pptx.ShapeType.roundRect, { x: 6.3, y: 4.85, w: 5.0, h: 3.0, fill: { color: "F1F5F9" } });
             });
 
-            // Trigger Direct Browser Native Download
-            pptx.writeFile({ fileName: `School_Presentation_${filter}.pptx` });
+            const blob = await pptx.write('blob');
+            await saveFileNative(blob, `School_Presentation_${filter}.pptx`, { 'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'] });
         }
 
-        // NATIVE DIRECT DOWNLOAD MULTI-PAGE PDF EXPORT ENGINE
+        // EXPORT MULTI-PAGE PDF USING NATIVE WINDOWS SAVE AS DIALOG
         async function exportPDF() {
             const filter = document.getElementById("adminBlockSelect").value;
             const workTitle = document.getElementById("pptWorkTitle").value;
@@ -1188,9 +1215,8 @@
             }
 
             renderContainer.innerHTML = "";
-            
-            // Trigger Direct Browser Native Download Box
-            pdf.save(`School_Presentation_${filter}.pdf`);
+            const pdfBlob = pdf.output('blob');
+            await saveFileNative(pdfBlob, `School_Presentation_${filter}.pdf`, { 'application/pdf': ['.pdf'] });
         }
 
         function showStatus(msg, color) {
