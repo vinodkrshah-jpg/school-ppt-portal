@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v18.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v19.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -151,6 +151,7 @@
             box-sizing: border-box;
             background-size: cover;
             background-position: center;
+            transition: all 0.3s ease;
         }
 
         .portal-link-box {
@@ -177,7 +178,6 @@
             font-size: 13px;
         }
 
-        /* POPUP DIALOGUE MODAL STYLES */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -232,7 +232,7 @@
         
         <div class="app-header">
             <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Automatic Prompt Sheet Import Dialogue System</p>
+            <p id="appHeaderSubtitle">Live Theme Import &amp; Preview Render System</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -261,34 +261,44 @@
                 <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Change Theme &amp; Font Size (Step 03)</button>
             </div>
 
-            <!-- STEP 03: SAMPLE PPT THEME FILE BROWSER, BACKGROUND IMAGE & FONT CONTROL -->
+            <!-- STEP 03: SAMPLE PPT THEME IMPORT & COLOR PICKER -->
             <div class="card" id="step3Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-file-powerpoint"></i> Step 03: Browse Sample PPT File or Image to Import Theme</div>
+                <div class="step-title"><i class="fa-solid fa-palette"></i> Step 03: Import Sample PPT Theme File or Choose Style</div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
                     <div>
-                        <label style="font-size: 12px; font-weight: 600;"><i class="fa-solid fa-file-powerpoint" style="color:#f97316;"></i> Browse Sample PPT File (.pptx, .ppt) for Theme:</label>
-                        <input type="file" accept=".pptx, .ppt, image/*" onchange="handleSamplePptThemeUpload(event)" class="input-text">
-                        <small style="color: #94a3b8; font-size: 10px;">Computer se koi bhi Sample PPT ya Background Image browse karein.</small>
+                        <label style="font-size: 12px; font-weight: 600;"><i class="fa-solid fa-file-powerpoint" style="color:#f97316;"></i> Browse Sample PPT Theme Image / Presentation File:</label>
+                        <input type="file" accept="image/*, .pptx, .ppt" onchange="handleSamplePptThemeUpload(event)" class="input-text">
+                        <small style="color: #38bdf8; font-size: 10px;">Computer se Sample PPT Background Image/File chunen (Preview instantly update hoga).</small>
                     </div>
                     <div>
-                        <label style="font-size: 12px; font-weight: 600;"><i class="fa-solid fa-fill-drip" style="color:#38bdf8;"></i> Header Banner Theme Color Picker:</label>
-                        <input type="color" id="headerColorPicker" value="#1e3a8a" onchange="changeHeaderColor(this.value)" style="width:100%; height:38px; cursor:pointer; background:#0f172a; border:1px solid #475569; border-radius:6px; margin-top:5px;">
+                        <label style="font-size: 12px; font-weight: 600;"><i class="fa-solid fa-wand-magic-sparkles" style="color:#38bdf8;"></i> Select Built-In Preset Theme Style:</label>
+                        <select onchange="applyPresetTheme(this.value)" class="input-text" style="margin-top:5px;">
+                            <option value="NAVY">Classic Navy Blue (Default)</option>
+                            <option value="TEAL">Modern Teal Green</option>
+                            <option value="DARK">Dark Elegant Charcoal</option>
+                            <option value="GOLD">Royal Maroon &amp; Gold</option>
+                            <option value="RED">Corporate Red &amp; Grey</option>
+                        </select>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                     <div>
-                        <label style="font-size: 12px; font-weight: 600;">Details Text Font Size (Current: <span id="fontVal">12</span>pt):</label>
-                        <input type="range" id="fontSizeSlider" min="9" max="20" value="12" oninput="adjustFontSize(this.value)" style="width:100%; margin-top:5px;">
+                        <label style="font-size: 11px; font-weight: 600;">Header Banner Color:</label>
+                        <input type="color" id="headerColorPicker" value="#1e3a8a" onchange="changeHeaderColor(this.value)" style="width:100%; height:35px; cursor:pointer; background:#0f172a; border:1px solid #475569; border-radius:6px; margin-top:3px;">
                     </div>
                     <div>
-                        <label style="font-size: 12px; font-weight: 600;">Line Spacing / Gap:</label>
-                        <input type="range" id="lineHeightSlider" min="1.1" max="2.2" step="0.1" value="1.4" oninput="adjustLineHeight(this.value)" style="width:100%; margin-top:5px;">
+                        <label style="font-size: 11px; font-weight: 600;">Text Font Size (<span id="fontVal">12</span>pt):</label>
+                        <input type="range" id="fontSizeSlider" min="9" max="20" value="12" oninput="adjustFontSize(this.value)" style="width:100%; margin-top:8px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 11px; font-weight: 600;">Line Gap / Spacing:</label>
+                        <input type="range" id="lineHeightSlider" min="1.1" max="2.2" step="0.1" value="1.4" oninput="adjustLineHeight(this.value)" style="width:100%; margin-top:8px;">
                     </div>
                 </div>
 
-                <button class="btn btn-blue" onclick="goToStep4()"><i class="fa-solid fa-arrow-right"></i> Next: Admin Photo Table &amp; Final Export (Step 04)</button>
+                <button class="btn btn-blue" onclick="goToStep4()"><i class="fa-solid fa-arrow-right"></i> Next: Admin Photo Table &amp; Live Preview (Step 04)</button>
             </div>
 
             <!-- STEP 04: ADMIN DIRECT ENTRY & EXPORT -->
@@ -329,7 +339,7 @@
                 </div>
 
                 <!-- Live Preview Box -->
-                <div style="font-weight: 700; color: #38bdf8; font-size: 13px; margin-top: 15px;"><i class="fa-solid fa-eye"></i> Live Preview Sheet:</div>
+                <div style="font-weight: 700; color: #38bdf8; font-size: 13px; margin-top: 15px;"><i class="fa-solid fa-eye"></i> Live Preview Sheet (Updated Theme):</div>
                 <div class="preview-box" id="previewSheet">
                     <div id="pvWorkBanner" style="background: #1e3a8a; color: #fff; text-align: center; font-weight: 800; font-size: 13px; padding: 4px; border-radius: 4px; margin-bottom: 8px;">
                         SCHOOL REPAIR & DILAPIDATED BUILDING STATUS
@@ -510,7 +520,6 @@
             }
         };
 
-        // Extract Block Name From Excel Row
         function extractBlockName(row) {
             for (let k in row) {
                 const lk = k.toLowerCase().trim();
@@ -521,7 +530,6 @@
             return '';
         }
 
-        // Extract UDISE Code
         function extractUdiseCode(rowOrText) {
             if (typeof rowOrText === 'string') {
                 const match = rowOrText.match(/\d{11}/);
@@ -560,7 +568,6 @@
                     container.appendChild(label);
                 });
 
-                // PROMPT DIALOGUE MODAL POPUP
                 document.getElementById("sheetModalOverlay").style.display = "flex";
                 showStatus("📋 Dialogue Opened: Select Sheets to Import.", "#38bdf8");
             };
@@ -593,10 +600,8 @@
                 });
             });
 
-            // Close Dialogue Box
             document.getElementById("sheetModalOverlay").style.display = "none";
 
-            // Extract Headers for Step 02
             const firstSheet = selectedSheetNames[0];
             const rawHeaders = XLSX.utils.sheet_to_json(workbookGlobal.Sheets[firstSheet], { header: 1 })[0];
             renderColumnCheckboxes(rawHeaders);
@@ -632,10 +637,10 @@
             }
 
             document.getElementById("step3Card").style.display = "block";
-            showStatus("✅ Columns Selected! Step 03 me Sample PPT Theme File ya Image Browse Karein.", "#4ade80");
+            showStatus("✅ Columns Selected! Step 03 me Sample PPT Theme File/Image Browse karein.", "#4ade80");
         }
 
-        // STEP 03: SAMPLE PPT THEME FILE & IMAGE BROWSER HANDLER
+        // STEP 03: SAMPLE PPT FILE OR IMAGE THEME IMPORT & PREVIEW RENDER
         function handleSamplePptThemeUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -643,14 +648,42 @@
             const reader = new FileReader();
             reader.onload = function(evt) {
                 themeBgImage = evt.target.result;
-                document.getElementById("previewSheet").style.backgroundImage = `url('${themeBgImage}')`;
-                showStatus(`🎨 Theme Applied from '${file.name}' Successfully!`, "#4ade80");
+                const previewEl = document.getElementById("previewSheet");
+                previewEl.style.backgroundImage = `url('${themeBgImage}')`;
+                previewEl.style.backgroundSize = "cover";
+                previewEl.style.backgroundPosition = "center";
+                
+                showStatus(`🎨 Theme Applied from '${file.name}'! Check Live Preview below.`, "#4ade80");
             };
             reader.readAsDataURL(file);
         }
 
+        function applyPresetTheme(styleKey) {
+            const previewEl = document.getElementById("previewSheet");
+            previewEl.style.backgroundImage = "none";
+
+            if (styleKey === "NAVY") {
+                changeHeaderColor("#1e3a8a");
+                previewEl.style.backgroundColor = "#ffffff";
+            } else if (styleKey === "TEAL") {
+                changeHeaderColor("#0d9488");
+                previewEl.style.backgroundColor = "#f0fdf4";
+            } else if (styleKey === "DARK") {
+                changeHeaderColor("#334155");
+                previewEl.style.backgroundColor = "#1e293b";
+            } else if (styleKey === "GOLD") {
+                changeHeaderColor("#800000");
+                previewEl.style.backgroundColor = "#fffbeb";
+            } else if (styleKey === "RED") {
+                changeHeaderColor("#991b1b");
+                previewEl.style.backgroundColor = "#fef2f2";
+            }
+            showStatus(`🎨 Preset Theme '${styleKey}' Applied to Preview!`, "#4ade80");
+        }
+
         function changeHeaderColor(colorVal) {
             themeHeaderColor = colorVal;
+            document.getElementById("headerColorPicker").value = colorVal;
             document.getElementById("pvWorkBanner").style.backgroundColor = colorVal;
             document.getElementById("pvHeader").style.backgroundColor = colorVal;
         }
@@ -718,7 +751,6 @@
             }
         }
 
-        // POPULATE BLOCK DROPDOWNS
         function populateBlockDropdowns() {
             let uniqueBlocks = new Set();
             excelRowsData.forEach(r => {
@@ -780,7 +812,9 @@
                 selectedColumns: selectedColumns,
                 registeredEngineers: registeredEngineers,
                 pptWorkTitle: document.getElementById("pptWorkTitle").value,
-                selectedFontSize: selectedFontSize
+                selectedFontSize: selectedFontSize,
+                themeBgImage: themeBgImage,
+                themeHeaderColor: themeHeaderColor
             };
 
             const jsonStr = JSON.stringify(adminDataPackage);
@@ -902,7 +936,10 @@
 
         function updatePreviewTheme() {
             if (themeBgImage) {
-                document.getElementById("previewSheet").style.backgroundImage = `url('${themeBgImage}')`;
+                const previewEl = document.getElementById("previewSheet");
+                previewEl.style.backgroundImage = `url('${themeBgImage}')`;
+                previewEl.style.backgroundSize = "cover";
+                previewEl.style.backgroundPosition = "center";
             }
             if (themeHeaderColor) {
                 document.getElementById("pvWorkBanner").style.backgroundColor = themeHeaderColor;
@@ -919,6 +956,8 @@
                 excelRowsData = pkg.excelRowsData || [];
                 selectedColumns = pkg.selectedColumns || [];
                 registeredEngineers = pkg.registeredEngineers && pkg.registeredEngineers.length > 0 ? pkg.registeredEngineers : DEFAULT_ENGINEERS;
+                if (pkg.themeBgImage) themeBgImage = pkg.themeBgImage;
+                if (pkg.themeHeaderColor) themeHeaderColor = pkg.themeHeaderColor;
                 showStatus("✅ Data Loaded Successfully! Mobile Number se Login Karein.", "#4ade80");
             } else {
                 registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
