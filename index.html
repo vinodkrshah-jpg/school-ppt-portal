@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v17.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v18.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -176,15 +176,63 @@
             margin-bottom: 12px;
             font-size: 13px;
         }
+
+        /* POPUP DIALOGUE MODAL STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal-box {
+            background-color: #1e293b;
+            border: 2px solid #38bdf8;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 550px;
+            padding: 22px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
+
+    <!-- POPUP DIALOGUE BOX FOR SHEET IMPORT -->
+    <div id="sheetModalOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <div style="font-size: 16px; font-weight: 700; color: #38bdf8; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <span><i class="fa-solid fa-file-excel"></i> Select Sheets to Import</span>
+                <label class="col-checkbox-label" style="background: #0f172a; padding: 4px 10px; margin: 0;">
+                    <input type="checkbox" id="selectAllSheetsCb" checked onchange="toggleSelectAllSheets(this.checked)">
+                    <strong style="color: #4ade80;">Select All Sheets</strong>
+                </label>
+            </div>
+            <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 12px;">Is Excel File me se kaun-kaun si sheet import karni hai, unhe select karein:</p>
+            
+            <div id="modalSheetCheckboxes" class="column-grid" style="max-height: 220px; overflow-y: auto; padding: 5px;"></div>
+            
+            <div style="margin-top: 18px; text-align: right;">
+                <button class="btn btn-green" onclick="confirmSheetImportModal()"><i class="fa-solid fa-check-double"></i> Import Selected Sheets &amp; Proceed</button>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         
         <div class="app-header">
             <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Sample PPT File Theme Browser &amp; Multi-Sheet Import System</p>
+            <p id="appHeaderSubtitle">Automatic Prompt Sheet Import Dialogue System</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -192,7 +240,7 @@
         <!-- ================= ADMIN SECTION ================= -->
         <div id="adminPanel">
             
-            <!-- STEP 01: TITLE & EXCEL UPLOAD + SHEET SELECTION -->
+            <!-- STEP 01: TITLE & EXCEL UPLOAD -->
             <div class="card" id="step1Card">
                 <div class="step-title"><i class="fa-solid fa-file-excel"></i> Step 01: Work PPT Title &amp; Upload Excel File</div>
                 
@@ -203,19 +251,6 @@
                     <i class="fa-solid fa-cloud-arrow-up" style="font-size: 30px; color: #3b82f6; margin-bottom: 6px;"></i>
                     <p style="font-weight: 600; font-size: 14px;">Select Excel File (.xlsx, .xls) to Import Data</p>
                     <input type="file" accept=".xlsx, .xls" onchange="processUploadedExcel(event)">
-                </div>
-
-                <!-- SHEET SELECTION AREA -->
-                <div id="sheetSelectionArea" style="display: none; margin-top: 15px; background: #0f172a; padding: 15px; border-radius: 8px; border: 2px solid #38bdf8;">
-                    <div style="font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-                        <span><i class="fa-solid fa-copy"></i> Select Sheets to Import from Excel File:</span>
-                        <label class="col-checkbox-label" style="background: #1e293b; padding: 4px 10px; margin: 0;">
-                            <input type="checkbox" id="selectAllSheetsCb" checked onchange="toggleSelectAllSheets(this.checked)">
-                            <strong style="color: #4ade80;">Select All Sheets</strong>
-                        </label>
-                    </div>
-                    <div id="sheetCheckboxes" class="column-grid"></div>
-                    <button class="btn btn-green" onclick="confirmSheetImport()" style="margin-top: 12px;"><i class="fa-solid fa-check"></i> Import Selected Sheets &amp; Proceed to Step 02</button>
                 </div>
             </div>
 
@@ -502,7 +537,7 @@
             return '';
         }
 
-        // STEP 01: Process Uploaded Excel
+        // STEP 01: Process Uploaded Excel & OPEN DIALOGUE MODAL PROMPT
         function processUploadedExcel(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -515,29 +550,30 @@
                 workbookGlobal = XLSX.read(data, { type: 'array' });
 
                 const sheetNames = workbookGlobal.SheetNames;
-                const container = document.getElementById("sheetCheckboxes");
+                const container = document.getElementById("modalSheetCheckboxes");
                 container.innerHTML = "";
 
                 sheetNames.forEach(sName => {
                     const label = document.createElement("label");
                     label.className = "col-checkbox-label";
-                    label.innerHTML = `<input type="checkbox" class="sheet-cb" value="${sName}" checked> <span>${sName}</span>`;
+                    label.innerHTML = `<input type="checkbox" class="modal-sheet-cb" value="${sName}" checked> <span>${sName}</span>`;
                     container.appendChild(label);
                 });
 
-                document.getElementById("sheetSelectionArea").style.display = "block";
-                showStatus("📋 Select Sheets below and click 'Import Selected Sheets'.", "#4ade80");
+                // PROMPT DIALOGUE MODAL POPUP
+                document.getElementById("sheetModalOverlay").style.display = "flex";
+                showStatus("📋 Dialogue Opened: Select Sheets to Import.", "#38bdf8");
             };
             reader.readAsArrayBuffer(file);
         }
 
         function toggleSelectAllSheets(isChecked) {
-            const checkboxes = document.querySelectorAll(".sheet-cb");
+            const checkboxes = document.querySelectorAll(".modal-sheet-cb");
             checkboxes.forEach(cb => cb.checked = isChecked);
         }
 
-        function confirmSheetImport() {
-            const selectedSheetCbs = document.querySelectorAll(".sheet-cb:checked");
+        function confirmSheetImportModal() {
+            const selectedSheetCbs = document.querySelectorAll(".modal-sheet-cb:checked");
             const selectedSheetNames = Array.from(selectedSheetCbs).map(cb => cb.value);
 
             if (selectedSheetNames.length === 0) {
@@ -556,6 +592,9 @@
                     excelRowsData.push(r);
                 });
             });
+
+            // Close Dialogue Box
+            document.getElementById("sheetModalOverlay").style.display = "none";
 
             // Extract Headers for Step 02
             const firstSheet = selectedSheetNames[0];
@@ -603,7 +642,6 @@
 
             const reader = new FileReader();
             reader.onload = function(evt) {
-                // Set theme background image or ppt slide capture
                 themeBgImage = evt.target.result;
                 document.getElementById("previewSheet").style.backgroundImage = `url('${themeBgImage}')`;
                 showStatus(`🎨 Theme Applied from '${file.name}' Successfully!`, "#4ade80");
@@ -859,7 +897,7 @@
             selectedColumns.forEach(col => {
                 fieldsContainer.innerHTML += `<div><strong>• ${col}:</strong> <span style="color:#1d4ed8;">${firstRow[col] || ''}</span></div>`;
             });
-        updatePreviewTheme();
+            updatePreviewTheme();
         }
 
         function updatePreviewTheme() {
