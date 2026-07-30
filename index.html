@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v13.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v15.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -149,6 +149,8 @@
             border: 2px solid #38bdf8;
             margin-top: 10px;
             box-sizing: border-box;
+            background-size: cover;
+            background-position: center;
         }
 
         .portal-link-box {
@@ -182,7 +184,7 @@
         
         <div class="app-header">
             <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Bulk Photo UDISE Match &amp; Flexible Workflow Portal</p>
+            <p id="appHeaderSubtitle">Multi-Sheet Selection &amp; Excel Import System</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -190,9 +192,9 @@
         <!-- ================= ADMIN SECTION ================= -->
         <div id="adminPanel">
             
-            <!-- STEP 01: TITLE & EXCEL UPLOAD -->
+            <!-- STEP 01: TITLE & EXCEL UPLOAD + SHEET SELECTION -->
             <div class="card" id="step1Card">
-                <div class="step-title"><i class="fa-solid fa-file-excel"></i> Step 01: Work PPT Title &amp; Upload Excel File</div>
+                <div class="step-title"><i class="fa-solid fa-file-excel"></i> Step 01: Work PPT Title, Excel File Upload &amp; Sheet Selector</div>
                 
                 <label style="font-size: 11px; font-weight: 600;">Work PPT Title (Editable Banner Text):</label>
                 <input type="text" id="pptWorkTitle" class="input-text" value="SCHOOL REPAIR & DILAPIDATED BUILDING STATUS" style="margin-bottom: 12px;">
@@ -202,19 +204,43 @@
                     <p style="font-weight: 600; font-size: 14px;">Select Excel File (.xlsx, .xls) to Import Data</p>
                     <input type="file" accept=".xlsx, .xls" onchange="processUploadedExcel(event)">
                 </div>
+
+                <!-- SHEET SELECTION AREA (Opens Automatically on Upload) -->
+                <div id="sheetSelectionArea" style="display: none; margin-top: 15px; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #38bdf8;">
+                    <div style="font-size: 12px; font-weight: 700; color: #38bdf8; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fa-solid fa-copy"></i> Select Sheets to Import:</span>
+                        <label class="col-checkbox-label" style="background: #1e293b; padding: 3px 8px; margin: 0;">
+                            <input type="checkbox" id="selectAllSheetsCb" checked onchange="toggleSelectAllSheets(this.checked)">
+                            <strong style="color: #4ade80;">Select All Sheets</strong>
+                        </label>
+                    </div>
+                    <div id="sheetCheckboxes" class="column-grid"></div>
+                    <button class="btn btn-green" onclick="confirmSheetImport()" style="margin-top: 10px;"><i class="fa-solid fa-check"></i> Import Selected Sheets</button>
+                </div>
             </div>
 
             <!-- STEP 02: SELECT COLUMNS -->
             <div class="card" id="step2Card" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-list-check"></i> Step 02: Select Columns for Slide Details Box</div>
                 <div id="columnCheckboxes" class="column-grid"></div>
-                <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Adjust Font &amp; Live Preview (Step 03)</button>
+                <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Change Theme &amp; Font Size (Step 03)</button>
             </div>
 
-            <!-- STEP 03: THEME & FONT SIZE CONTROL + LIVE PREVIEW -->
+            <!-- STEP 03: THEME, BACKGROUND IMAGE & FONT SIZE CONTROL + LIVE PREVIEW -->
             <div class="card" id="step3Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-sliders"></i> Step 03: Font Size Adjustment &amp; Live Preview</div>
+                <div class="step-title"><i class="fa-solid fa-palette"></i> Step 03: Customize Theme Background &amp; Font Size</div>
                 
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
+                    <div>
+                        <label style="font-size: 12px; font-weight: 600;"><i class="fa-solid fa-image"></i> Browse Sample PPT Theme Background (From Computer):</label>
+                        <input type="file" accept="image/*" onchange="handleThemeBgUpload(event)" class="input-text">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: 600;"><i class="fa-solid fa-fill-drip"></i> Header Banner Color Picker:</label>
+                        <input type="color" id="headerColorPicker" value="#1e3a8a" onchange="changeHeaderColor(this.value)" style="width:100%; height:38px; cursor:pointer; background:#0f172a; border:1px solid #475569; border-radius:6px; margin-top:5px;">
+                    </div>
+                </div>
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
                     <div>
                         <label style="font-size: 12px; font-weight: 600;">Details Text Font Size (Current: <span id="fontVal">12</span>pt):</label>
@@ -229,13 +255,13 @@
                 <button class="btn btn-blue" onclick="goToStep4()"><i class="fa-solid fa-arrow-right"></i> Next: Admin Photo Table &amp; Final Export (Step 04)</button>
             </div>
 
-            <!-- STEP 04: ADMIN DIRECT ENTRY (MANUAL & BULK UDISE UPLOAD) & EXPORT -->
+            <!-- STEP 04: ADMIN DIRECT ENTRY & EXPORT -->
             <div class="card" id="step4Card" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-table-list"></i> Step 04: Admin Live Photo Table &amp; Final Export</div>
                 
                 <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #3b82f6; margin-bottom: 15px;">
                     <div style="font-size: 12px; font-weight: 700; color: #38bdf8; margin-bottom: 6px;"><i class="fa-solid fa-images"></i> Bulk Photo Upload System (By UDISE Code Match):</div>
-                    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Saari photos ek saath chunen. Photo ka naam UDISE Code hona chahiye (e.g., <code>23500107102.jpg</code> ya <code>23500107102(1).jpg</code>). System exact match karke sahi row me auto-set kar dega.</p>
+                    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Saari photos ek saath chunen. Photo ka naam UDISE Code hona chahiye (e.g., <code>23500107102.jpg</code> ya <code>23500107102(1).jpg</code>).</p>
                     <input type="file" id="bulkPhotoInput" multiple accept="image/*" onchange="handleBulkPhotoUpload(event)" style="font-size: 12px;">
                     <span id="bulkUploadStatus" style="font-size: 12px; font-weight: 600; color: #4ade80; margin-left: 10px;"></span>
                 </div>
@@ -421,12 +447,15 @@
             { name: "SHIV SHARAN SINGH", mobile: "8461932255", block: "बैढ़न" }
         ];
 
+        let workbookGlobal = null;
         let excelRowsData = [];
         let selectedColumns = [];
         let registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
         let rowPhotosMap = {}; 
         let currentLoggedInEng = null;
         let selectedFontSize = 12;
+        let themeBgImage = null;
+        let themeHeaderColor = "#1e3a8a";
 
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -456,7 +485,7 @@
             return '';
         }
 
-        // Extract UDISE Code From Excel Row or Text
+        // Extract UDISE Code
         function extractUdiseCode(rowOrText) {
             if (typeof rowOrText === 'string') {
                 const match = rowOrText.match(/\d{11}/);
@@ -472,39 +501,69 @@
             return '';
         }
 
-        // STEP 01: Process Uploaded Excel
+        // STEP 01: Process Uploaded Excel & Show Sheet Checkboxes
         function processUploadedExcel(e) {
             const file = e.target.files[0];
             if (!file) return;
 
-            showStatus("Reading Excel file data...", "#38bdf8");
+            showStatus("Reading Excel file structure...", "#38bdf8");
             const reader = new FileReader();
 
             reader.onload = function(evt) {
                 const data = new Uint8Array(evt.target.result);
-                const wb = XLSX.read(data, { type: 'array' });
+                workbookGlobal = XLSX.read(data, { type: 'array' });
 
-                excelRowsData = [];
-                wb.SheetNames.forEach(sheetName => {
-                    const ws = wb.Sheets[sheetName];
-                    const sheetRows = XLSX.utils.sheet_to_json(ws);
-                    sheetRows.forEach(r => {
-                        if (!extractBlockName(r)) {
-                            r['block_name'] = sheetName.trim();
-                        }
-                        excelRowsData.push(r);
-                    });
+                const sheetNames = workbookGlobal.SheetNames;
+                const container = document.getElementById("sheetCheckboxes");
+                container.innerHTML = "";
+
+                sheetNames.forEach(sName => {
+                    const label = document.createElement("label");
+                    label.className = "col-checkbox-label";
+                    label.innerHTML = `<input type="checkbox" class="sheet-cb" value="${sName}" checked> <span>${sName}</span>`;
+                    container.appendChild(label);
                 });
 
-                const firstSheet = wb.SheetNames[0];
-                const rawHeaders = XLSX.utils.sheet_to_json(wb.Sheets[firstSheet], { header: 1 })[0];
-                renderColumnCheckboxes(rawHeaders);
-                populateBlockDropdowns();
-
-                document.getElementById("step2Card").style.display = "block";
-                showStatus("✅ Excel Loaded Successfully! Step 02 me Columns Select Karein.", "#4ade80");
+                document.getElementById("sheetSelectionArea").style.display = "block";
+                showStatus("📋 Excel Loaded! Select Sheets to Import below.", "#4ade80");
             };
             reader.readAsArrayBuffer(file);
+        }
+
+        function toggleSelectAllSheets(isChecked) {
+            const checkboxes = document.querySelectorAll(".sheet-cb");
+            checkboxes.forEach(cb => cb.checked = isChecked);
+        }
+
+        function confirmSheetImport() {
+            const selectedSheetCbs = document.querySelectorAll(".sheet-cb:checked");
+            const selectedSheetNames = Array.from(selectedSheetCbs).map(cb => cb.value);
+
+            if (selectedSheetNames.length === 0) {
+                alert("Kripya kam se kam 1 Sheet Select Karein!");
+                return;
+            }
+
+            excelRowsData = [];
+            selectedSheetNames.forEach(sheetName => {
+                const ws = workbookGlobal.Sheets[sheetName];
+                const sheetRows = XLSX.utils.sheet_to_json(ws);
+                sheetRows.forEach(r => {
+                    if (!extractBlockName(r)) {
+                        r['block_name'] = sheetName.trim();
+                    }
+                    excelRowsData.push(r);
+                });
+            });
+
+            // Extract Headers for Step 02
+            const firstSheet = selectedSheetNames[0];
+            const rawHeaders = XLSX.utils.sheet_to_json(workbookGlobal.Sheets[firstSheet], { header: 1 })[0];
+            renderColumnCheckboxes(rawHeaders);
+            populateBlockDropdowns();
+
+            document.getElementById("step2Card").style.display = "block";
+            showStatus(`✅ ${selectedSheetNames.length} Sheet(s) Imported Successfully! Proceed to Step 02.`, "#4ade80");
         }
 
         // STEP 02: Column Checkboxes
@@ -533,7 +592,27 @@
             }
 
             document.getElementById("step3Card").style.display = "block";
-            showStatus("✅ Columns Selected! Step 03 me Font Size & Preview adjust karein.", "#4ade80");
+            showStatus("✅ Columns Selected! Step 03 me Theme Background & Font Size adjust karein.", "#4ade80");
+        }
+
+        // THEME & BACKGROUND HANDLERS
+        function handleThemeBgUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                themeBgImage = evt.target.result;
+                document.getElementById("previewSheet").style.backgroundImage = `url('${themeBgImage}')`;
+                showStatus("🎨 Theme Background Image Applied to Preview!", "#4ade80");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function changeHeaderColor(colorVal) {
+            themeHeaderColor = colorVal;
+            document.getElementById("pvWorkBanner").style.backgroundColor = colorVal;
+            document.getElementById("pvHeader").style.backgroundColor = colorVal;
         }
 
         function goToStep4() {
@@ -556,7 +635,6 @@
                 const udiseInFile = extractUdiseCode(fileName);
 
                 if (udiseInFile) {
-                    // Match with Excel Rows
                     excelRowsData.forEach((row, idx) => {
                         const rowUdise = extractUdiseCode(row);
                         if (rowUdise && rowUdise === udiseInFile) {
@@ -564,7 +642,6 @@
 
                             const reader = new FileReader();
                             reader.onload = function(evt) {
-                                // If filename contains (1), _1, (2) etc.
                                 if (fileName.includes('(2)') || fileName.includes('_2') || fileName.includes('-2')) {
                                     rowPhotosMap[idx].photo2 = evt.target.result;
                                 } else if (fileName.includes('(1)') || fileName.includes('_1') || fileName.includes('-1')) {
@@ -610,11 +687,12 @@
             });
 
             const engSelect = document.getElementById("engBlockSelect");
-            engSelect.innerHTML = "";
-
-            uniqueBlocks.forEach(b => {
-                engSelect.innerHTML += `<option value="${b}">${b}</option>`;
-            });
+            if (engSelect) {
+                engSelect.innerHTML = "";
+                uniqueBlocks.forEach(b => {
+                    engSelect.innerHTML += `<option value="${b}">${b}</option>`;
+                });
+            }
         }
 
         // STEP 06: Register Engineers
@@ -793,7 +871,7 @@
                 showStatus("✅ Data Loaded Successfully! Mobile Number se Login Karein.", "#4ade80");
             } else {
                 registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
-                showStatus("⚠️ Notice: Link kholne se pehle Admin dwara Save Data package nahi banaya gaya tha.", "#f59e0b");
+                showStatus("⚠️ Notice: Link kholne se pehle Admin dwara Step 03 me Save Data package nahi banaya gaya tha.", "#f59e0b");
             }
         }
 
@@ -923,12 +1001,17 @@
                 let slide = pptx.addSlide();
                 const photos = rowPhotosMap[idx] || { photo1: null, photo2: null };
 
+                // Background Theme Image
+                if (themeBgImage) {
+                    slide.addImage({ data: themeBgImage, x: 0, y: 0, w: 11.69, h: 8.27 });
+                }
+
                 // Top Work Title Banner
-                slide.addShape(pptx.ShapeType.rect, { x: 0.4, y: 0.2, w: 10.89, h: 0.4, fill: { color: "1E3A8A" } });
+                slide.addShape(pptx.ShapeType.rect, { x: 0.4, y: 0.2, w: 10.89, h: 0.4, fill: { color: themeHeaderColor.replace('#','') } });
                 slide.addText(workTitle, { x: 0.4, y: 0.2, w: 10.89, h: 0.4, align: "center", fontSize: 13, bold: true, color: "FFFFFF" });
 
                 // Header Banner
-                slide.addShape(pptx.ShapeType.rect, { x: 0.4, y: 0.65, w: 10.89, h: 0.9, fill: { color: "1E3A8A" } });
+                slide.addShape(pptx.ShapeType.rect, { x: 0.4, y: 0.65, w: 10.89, h: 0.9, fill: { color: themeHeaderColor.replace('#','') } });
                 slide.addText(String(schName || ''), { x: 0.5, y: 0.7, w: 4.8, h: 0.4, fontSize: 16, bold: true, color: "FFFFFF", autoFit: true });
                 slide.addText("UDISE Code: " + String(udise || ''), { x: 0.5, y: 1.1, w: 4.8, h: 0.3, fontSize: 11, bold: true, color: "CBD5E1" });
 
