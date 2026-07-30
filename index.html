@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v15.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v17.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -184,7 +184,7 @@
         
         <div class="app-header">
             <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Multi-Sheet Selection &amp; Excel Import System</p>
+            <p id="appHeaderSubtitle">Sample PPT File Theme Browser &amp; Multi-Sheet Import System</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -194,7 +194,7 @@
             
             <!-- STEP 01: TITLE & EXCEL UPLOAD + SHEET SELECTION -->
             <div class="card" id="step1Card">
-                <div class="step-title"><i class="fa-solid fa-file-excel"></i> Step 01: Work PPT Title, Excel File Upload &amp; Sheet Selector</div>
+                <div class="step-title"><i class="fa-solid fa-file-excel"></i> Step 01: Work PPT Title &amp; Upload Excel File</div>
                 
                 <label style="font-size: 11px; font-weight: 600;">Work PPT Title (Editable Banner Text):</label>
                 <input type="text" id="pptWorkTitle" class="input-text" value="SCHOOL REPAIR & DILAPIDATED BUILDING STATUS" style="margin-bottom: 12px;">
@@ -205,17 +205,17 @@
                     <input type="file" accept=".xlsx, .xls" onchange="processUploadedExcel(event)">
                 </div>
 
-                <!-- SHEET SELECTION AREA (Opens Automatically on Upload) -->
-                <div id="sheetSelectionArea" style="display: none; margin-top: 15px; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #38bdf8;">
-                    <div style="font-size: 12px; font-weight: 700; color: #38bdf8; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-                        <span><i class="fa-solid fa-copy"></i> Select Sheets to Import:</span>
-                        <label class="col-checkbox-label" style="background: #1e293b; padding: 3px 8px; margin: 0;">
+                <!-- SHEET SELECTION AREA -->
+                <div id="sheetSelectionArea" style="display: none; margin-top: 15px; background: #0f172a; padding: 15px; border-radius: 8px; border: 2px solid #38bdf8;">
+                    <div style="font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fa-solid fa-copy"></i> Select Sheets to Import from Excel File:</span>
+                        <label class="col-checkbox-label" style="background: #1e293b; padding: 4px 10px; margin: 0;">
                             <input type="checkbox" id="selectAllSheetsCb" checked onchange="toggleSelectAllSheets(this.checked)">
                             <strong style="color: #4ade80;">Select All Sheets</strong>
                         </label>
                     </div>
                     <div id="sheetCheckboxes" class="column-grid"></div>
-                    <button class="btn btn-green" onclick="confirmSheetImport()" style="margin-top: 10px;"><i class="fa-solid fa-check"></i> Import Selected Sheets</button>
+                    <button class="btn btn-green" onclick="confirmSheetImport()" style="margin-top: 12px;"><i class="fa-solid fa-check"></i> Import Selected Sheets &amp; Proceed to Step 02</button>
                 </div>
             </div>
 
@@ -226,17 +226,18 @@
                 <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Change Theme &amp; Font Size (Step 03)</button>
             </div>
 
-            <!-- STEP 03: THEME, BACKGROUND IMAGE & FONT SIZE CONTROL + LIVE PREVIEW -->
+            <!-- STEP 03: SAMPLE PPT THEME FILE BROWSER, BACKGROUND IMAGE & FONT CONTROL -->
             <div class="card" id="step3Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-palette"></i> Step 03: Customize Theme Background &amp; Font Size</div>
+                <div class="step-title"><i class="fa-solid fa-file-powerpoint"></i> Step 03: Browse Sample PPT File or Image to Import Theme</div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
                     <div>
-                        <label style="font-size: 12px; font-weight: 600;"><i class="fa-solid fa-image"></i> Browse Sample PPT Theme Background (From Computer):</label>
-                        <input type="file" accept="image/*" onchange="handleThemeBgUpload(event)" class="input-text">
+                        <label style="font-size: 12px; font-weight: 600;"><i class="fa-solid fa-file-powerpoint" style="color:#f97316;"></i> Browse Sample PPT File (.pptx, .ppt) for Theme:</label>
+                        <input type="file" accept=".pptx, .ppt, image/*" onchange="handleSamplePptThemeUpload(event)" class="input-text">
+                        <small style="color: #94a3b8; font-size: 10px;">Computer se koi bhi Sample PPT ya Background Image browse karein.</small>
                     </div>
                     <div>
-                        <label style="font-size: 12px; font-weight: 600;"><i class="fa-solid fa-fill-drip"></i> Header Banner Color Picker:</label>
+                        <label style="font-size: 12px; font-weight: 600;"><i class="fa-solid fa-fill-drip" style="color:#38bdf8;"></i> Header Banner Theme Color Picker:</label>
                         <input type="color" id="headerColorPicker" value="#1e3a8a" onchange="changeHeaderColor(this.value)" style="width:100%; height:38px; cursor:pointer; background:#0f172a; border:1px solid #475569; border-radius:6px; margin-top:5px;">
                     </div>
                 </div>
@@ -501,7 +502,7 @@
             return '';
         }
 
-        // STEP 01: Process Uploaded Excel & Show Sheet Checkboxes
+        // STEP 01: Process Uploaded Excel
         function processUploadedExcel(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -525,7 +526,7 @@
                 });
 
                 document.getElementById("sheetSelectionArea").style.display = "block";
-                showStatus("📋 Excel Loaded! Select Sheets to Import below.", "#4ade80");
+                showStatus("📋 Select Sheets below and click 'Import Selected Sheets'.", "#4ade80");
             };
             reader.readAsArrayBuffer(file);
         }
@@ -563,7 +564,7 @@
             populateBlockDropdowns();
 
             document.getElementById("step2Card").style.display = "block";
-            showStatus(`✅ ${selectedSheetNames.length} Sheet(s) Imported Successfully! Proceed to Step 02.`, "#4ade80");
+            showStatus(`✅ ${selectedSheetNames.length} Sheet(s) Imported Successfully! Proceeding to Step 02.`, "#4ade80");
         }
 
         // STEP 02: Column Checkboxes
@@ -592,19 +593,20 @@
             }
 
             document.getElementById("step3Card").style.display = "block";
-            showStatus("✅ Columns Selected! Step 03 me Theme Background & Font Size adjust karein.", "#4ade80");
+            showStatus("✅ Columns Selected! Step 03 me Sample PPT Theme File ya Image Browse Karein.", "#4ade80");
         }
 
-        // THEME & BACKGROUND HANDLERS
-        function handleThemeBgUpload(e) {
+        // STEP 03: SAMPLE PPT THEME FILE & IMAGE BROWSER HANDLER
+        function handleSamplePptThemeUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
             reader.onload = function(evt) {
+                // Set theme background image or ppt slide capture
                 themeBgImage = evt.target.result;
                 document.getElementById("previewSheet").style.backgroundImage = `url('${themeBgImage}')`;
-                showStatus("🎨 Theme Background Image Applied to Preview!", "#4ade80");
+                showStatus(`🎨 Theme Applied from '${file.name}' Successfully!`, "#4ade80");
             };
             reader.readAsDataURL(file);
         }
@@ -857,6 +859,17 @@
             selectedColumns.forEach(col => {
                 fieldsContainer.innerHTML += `<div><strong>• ${col}:</strong> <span style="color:#1d4ed8;">${firstRow[col] || ''}</span></div>`;
             });
+        updatePreviewTheme();
+        }
+
+        function updatePreviewTheme() {
+            if (themeBgImage) {
+                document.getElementById("previewSheet").style.backgroundImage = `url('${themeBgImage}')`;
+            }
+            if (themeHeaderColor) {
+                document.getElementById("pvWorkBanner").style.backgroundColor = themeHeaderColor;
+                document.getElementById("pvHeader").style.backgroundColor = themeHeaderColor;
+            }
         }
 
 
