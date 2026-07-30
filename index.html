@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v19.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v20.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -228,11 +228,14 @@
         </div>
     </div>
 
+    <!-- HIDDEN RENDER CONTAINER FOR FULL PDF EXPORT -->
+    <div id="pdfRenderContainer" style="position: absolute; left: -9999px; top: -9999px; width: 1122px; height: 793px;"></div>
+
     <div class="container">
         
         <div class="app-header">
             <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Live Theme Import &amp; Preview Render System</p>
+            <p id="appHeaderSubtitle">Full Multi-Page PDF &amp; PPTX Export System</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -319,7 +322,7 @@
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download PPTX</button>
-                        <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF</button>
+                        <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF (100% Rows Multi-Page)</button>
                     </div>
                 </div>
 
@@ -339,7 +342,7 @@
                 </div>
 
                 <!-- Live Preview Box -->
-                <div style="font-weight: 700; color: #38bdf8; font-size: 13px; margin-top: 15px;"><i class="fa-solid fa-eye"></i> Live Preview Sheet (Updated Theme):</div>
+                <div style="font-weight: 700; color: #38bdf8; font-size: 13px; margin-top: 15px;"><i class="fa-solid fa-eye"></i> Live Preview Sheet (First Row Sample):</div>
                 <div class="preview-box" id="previewSheet">
                     <div id="pvWorkBanner" style="background: #1e3a8a; color: #fff; text-align: center; font-weight: 800; font-size: 13px; padding: 4px; border-radius: 4px; margin-bottom: 8px;">
                         SCHOOL REPAIR & DILAPIDATED BUILDING STATUS
@@ -545,7 +548,7 @@
             return '';
         }
 
-        // STEP 01: Process Uploaded Excel & OPEN DIALOGUE MODAL PROMPT
+        // STEP 01: Process Uploaded Excel
         function processUploadedExcel(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -640,7 +643,7 @@
             showStatus("✅ Columns Selected! Step 03 me Sample PPT Theme File/Image Browse karein.", "#4ade80");
         }
 
-        // STEP 03: SAMPLE PPT FILE OR IMAGE THEME IMPORT & PREVIEW RENDER
+        // STEP 03: SAMPLE PPT FILE OR IMAGE THEME IMPORT
         function handleSamplePptThemeUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -695,7 +698,7 @@
             updatePreviewSheet();
         }
 
-        // STEP 04: BULK PHOTO UPLOAD SYSTEM (MATCH BY UDISE)
+        // STEP 04: BULK PHOTO UPLOAD SYSTEM
         function handleBulkPhotoUpload(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
@@ -1133,25 +1136,86 @@
                 .then(() => showStatus(`🎉 PPTX Exported Successfully!`, "#4ade80"));
         }
 
-        // WORKING PDF EXPORT
-        function exportPDF() {
-            const element = document.getElementById("previewSheet");
-            showStatus("Generating Printable PDF...", "#38bdf8");
+        // FULL 100% ROWS MULTI-PAGE PDF EXPORT ENGINE
+        async function exportPDF() {
+            const filter = document.getElementById("adminBlockSelect").value;
+            const workTitle = document.getElementById("pptWorkTitle").value;
+            const renderContainer = document.getElementById("pdfRenderContainer");
 
-            html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('landscape', 'mm', 'a4');
-
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save('School_Presentation.pdf');
-                showStatus("🎉 PDF Downloaded Successfully!", "#4ade80");
-            }).catch(err => {
-                showStatus("PDF Error: " + err.message, "#f87171");
+            let targetRows = excelRowsData.filter(row => {
+                const block = extractBlockName(row) || 'MAIN';
+                return (filter === "ALL" || block.toLowerCase().trim() === filter.toLowerCase().trim());
             });
+
+            if (targetRows.length === 0) {
+                alert("Export karne ke liye koi data nahi mila!");
+                return;
+            }
+
+            showStatus(`Generating 100% Multi-Page PDF for ${targetRows.length} Rows... Please wait.`, "#38bdf8");
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('landscape', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            for (let i = 0; i < targetRows.length; i++) {
+                const row = targetRows[i];
+                const originalIdx = excelRowsData.indexOf(row);
+                const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `School ${i + 1}`;
+                const udise = extractUdiseCode(row) || '';
+                const panchayat = row['Panchayat Name'] || row['ग्राम पंचायत'] || '';
+                const block = extractBlockName(row) || 'Block';
+                const photos = rowPhotosMap[originalIdx] || { photo1: null, photo2: null };
+
+                // Build HTML for current page
+                let fieldsHtml = `<div><strong>• Sr No. (क्र.):</strong> <span style="color:#1d4ed8;">${row['Sr'] || (i + 1)}</span></div>`;
+                selectedColumns.forEach(col => {
+                    fieldsHtml += `<div><strong>• ${col}:</strong> <span style="color:#1d4ed8;">${row[col] || ''}</span></div>`;
+                });
+
+                renderContainer.innerHTML = `
+                    <div style="width:1122px; height:793px; background:#fff; padding:20px; display:flex; flex-direction:column; box-sizing:border-box; background-image: ${themeBgImage ? `url('${themeBgImage}')` : 'none'}; background-size:cover;">
+                        <div style="background:${themeHeaderColor}; color:#fff; text-align:center; font-weight:800; font-size:16px; padding:6px; border-radius:4px; margin-bottom:10px;">
+                            ${workTitle}
+                        </div>
+                        <div style="background:${themeHeaderColor}; color:#fff; padding:10px 15px; border-radius:6px; display:grid; grid-template-columns:1.4fr 1fr 1fr; align-items:center; margin-bottom:12px;">
+                            <div>
+                                <div style="font-weight:800; font-size:18px;">${schName}</div>
+                                <div style="font-size:12px; color:#cbd5e1;">UDISE: ${udise}</div>
+                            </div>
+                            <div style="background:#2563eb; padding:5px 10px; border-radius:4px; text-align:center; font-weight:700; font-size:13px;">पंचायत: ${panchayat}</div>
+                            <div style="background:#f59e0b; color:#0f172a; padding:5px 10px; border-radius:4px; text-align:center; font-weight:800; font-size:13px;">जनपद: ${block}</div>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1.1fr 1fr; gap:15px; flex-grow:1;">
+                            <div style="background:rgba(248,250,252,0.95); border:1.5px solid #cbd5e1; border-radius:8px; padding:15px; display:flex; flex-direction:column; justify-content:space-around;">
+                                <div style="font-size:14px; font-weight:800; color:#1e3a8a; border-bottom:2px solid #2563eb; padding-bottom:4px; margin-bottom:8px;">📋 SCHOOL DETAILS</div>
+                                <div style="font-size:${selectedFontSize}pt; line-height:1.5; color:#1e293b;">${fieldsHtml}</div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:10px;">
+                                <div style="flex:1; background:#f1f5f9; border:2px dashed #94a3b8; border-radius:8px; background-image:${photos.photo1 ? `url('${photos.photo1}')` : 'none'}; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; font-weight:700; color:#64748b;">
+                                    ${photos.photo1 ? '' : '📷 Photo 1 Slot'}
+                                </div>
+                                <div style="flex:1; background:#f1f5f9; border:2px dashed #94a3b8; border-radius:8px; background-image:${photos.photo2 ? `url('${photos.photo2}')` : 'none'}; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; font-weight:700; color:#64748b;">
+                                    ${photos.photo2 ? '' : '🔧 Photo 2 Slot'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Capture canvas
+                const canvas = await html2canvas(renderContainer, { scale: 2, useCORS: true });
+                const imgData = canvas.toDataURL('image/png');
+
+                if (i > 0) pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                showStatus(`Processed Page ${i + 1} of ${targetRows.length}...`, "#38bdf8");
+            }
+
+            renderContainer.innerHTML = "";
+            pdf.save(`School_Presentation_${filter}.pdf`);
+            showStatus(`🎉 Full Multi-Page PDF (${targetRows.length} Pages) Downloaded Successfully!`, "#4ade80");
         }
 
         function showStatus(msg, color) {
