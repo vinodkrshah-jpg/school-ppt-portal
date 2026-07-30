@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Repair &amp; Dilapidated PPT Portal v12.0</title>
+    <title>School Repair &amp; Dilapidated PPT Portal v13.0</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -182,7 +182,7 @@
         
         <div class="app-header">
             <h1 id="appHeaderTitle"><i class="fa-solid fa-layer-group"></i> Master School PPT &amp; PDF Portal</h1>
-            <p id="appHeaderSubtitle">Exact Excel Block Match System</p>
+            <p id="appHeaderSubtitle">Bulk Photo UDISE Match &amp; Flexible Workflow Portal</p>
         </div>
 
         <div id="statusBox" class="status-msg"></div>
@@ -208,12 +208,12 @@
             <div class="card" id="step2Card" style="display: none;">
                 <div class="step-title"><i class="fa-solid fa-list-check"></i> Step 02: Select Columns for Slide Details Box</div>
                 <div id="columnCheckboxes" class="column-grid"></div>
-                <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Adjust Font &amp; Live Preview</button>
+                <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Adjust Font &amp; Live Preview (Step 03)</button>
             </div>
 
-            <!-- STEP 04: THEME & FONT SIZE CONTROL + LIVE PREVIEW -->
-            <div class="card" id="step4Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-sliders"></i> Step 04: Font Size Adjustment &amp; Live Preview</div>
+            <!-- STEP 03: THEME & FONT SIZE CONTROL + LIVE PREVIEW -->
+            <div class="card" id="step3Card" style="display: none;">
+                <div class="step-title"><i class="fa-solid fa-sliders"></i> Step 03: Font Size Adjustment &amp; Live Preview</div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
                     <div>
@@ -226,21 +226,27 @@
                     </div>
                 </div>
 
-                <button class="btn btn-blue" onclick="goToStep5()"><i class="fa-solid fa-arrow-right"></i> Next: Block Filter &amp; Photo Table</button>
+                <button class="btn btn-blue" onclick="goToStep4()"><i class="fa-solid fa-arrow-right"></i> Next: Admin Photo Table &amp; Final Export (Step 04)</button>
             </div>
 
-            <!-- STEP 05/06: ADMIN DIRECT ENTRY & EXPORT PPT/PDF -->
-            <div class="card" id="step5Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-table-list"></i> Step 06: Admin Live Photo Table &amp; Final PPTX/PDF Export</div>
+            <!-- STEP 04: ADMIN DIRECT ENTRY (MANUAL & BULK UDISE UPLOAD) & EXPORT -->
+            <div class="card" id="step4Card" style="display: none;">
+                <div class="step-title"><i class="fa-solid fa-table-list"></i> Step 04: Admin Live Photo Table &amp; Final Export</div>
                 
+                <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #3b82f6; margin-bottom: 15px;">
+                    <div style="font-size: 12px; font-weight: 700; color: #38bdf8; margin-bottom: 6px;"><i class="fa-solid fa-images"></i> Bulk Photo Upload System (By UDISE Code Match):</div>
+                    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Saari photos ek saath chunen. Photo ka naam UDISE Code hona chahiye (e.g., <code>23500107102.jpg</code> ya <code>23500107102(1).jpg</code>). System exact match karke sahi row me auto-set kar dega.</p>
+                    <input type="file" id="bulkPhotoInput" multiple accept="image/*" onchange="handleBulkPhotoUpload(event)" style="font-size: 12px;">
+                    <span id="bulkUploadStatus" style="font-size: 12px; font-weight: 600; color: #4ade80; margin-left: 10px;"></span>
+                </div>
+
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <div>
                         <label style="font-size: 12px; font-weight: 600;">Block Filter:</label>
                         <select id="adminBlockSelect" onchange="renderAdminPhotoTable()" style="padding: 6px; width: 220px; display: inline-block;"></select>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-blue" onclick="goToStep3()"><i class="fa-solid fa-users-gear"></i> Next: Register Sub-Engineers (Step 03)</button>
-                        <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download Editable PPTX</button>
+                        <button class="btn btn-purple" onclick="exportPPTX()"><i class="fa-solid fa-file-powerpoint"></i> Download PPTX</button>
                         <button class="btn btn-red" onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> Export Printable PDF</button>
                     </div>
                 </div>
@@ -296,11 +302,21 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- STEP 05: DECISION BOX FOR SUB ENGINEER REGISTRATION -->
+                <div style="background: #0f172a; border: 2px solid #f59e0b; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: center;">
+                    <h3 style="font-size: 14px; color: #f59e0b; margin-bottom: 8px;"><i class="fa-solid fa-circle-question"></i> Step 05: Kya aap Field Sub-Engineers se Photo Upload karwana chahte hain?</h3>
+                    <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 12px;">'YES' par click karne par Sub-Engineer Registration khulega. 'NO' par aapka normal admin process complete ho jayega.</p>
+                    <div style="display: flex; justify-content: center; gap: 15px;">
+                        <button class="btn btn-green" onclick="handleSubEngineerDecision(true)"><i class="fa-solid fa-check"></i> YES: Register Sub-Engineers &amp; Share Link</button>
+                        <button class="btn btn-amber" onclick="handleSubEngineerDecision(false)"><i class="fa-solid fa-xmark"></i> NO: Finish Process at Admin Level</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- STEP 03: SUB-ENGINEERS REGISTRATION & LINK GENERATION -->
-            <div class="card" id="step3Card" style="display: none;">
-                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 03: Sub-Engineers List &amp; Assigned Block (Exact Excel Match)</div>
+            <!-- STEP 06: SUB-ENGINEERS REGISTRATION -->
+            <div class="card" id="step6Card" style="display: none;">
+                <div class="step-title"><i class="fa-solid fa-users-gear"></i> Step 06: Sub-Engineers Registration &amp; Block Assignment</div>
                 
                 <div style="display: grid; grid-template-columns: 1.2fr 1.2fr 1.5fr auto; gap: 8px; align-items: flex-end; margin-bottom: 10px;">
                     <div>
@@ -333,8 +349,7 @@
                 </div>
 
                 <div style="margin-top: 12px; display: flex; gap: 10px;">
-                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-floppy-disk"></i> 1. Save Data Package</button>
-                    <button class="btn btn-blue" onclick="goToStep7()"><i class="fa-solid fa-share-nodes"></i> 2. Generate Shareable Link (Step 07)</button>
+                    <button class="btn btn-green" onclick="saveAdminDataAndEnablePortal()"><i class="fa-solid fa-floppy-disk"></i> Save Data Package &amp; Activate Link</button>
                 </div>
             </div>
 
@@ -430,12 +445,28 @@
             }
         };
 
-        // Exact Raw Text Pick from Excel Sheet (Without altering Uppercase/Lowercase)
+        // Extract Block Name From Excel Row
         function extractBlockName(row) {
             for (let k in row) {
                 const lk = k.toLowerCase().trim();
                 if (lk.includes('block') || lk.includes('जनपद') || lk.includes('janpad')) {
                     return String(row[k] || '').trim();
+                }
+            }
+            return '';
+        }
+
+        // Extract UDISE Code From Excel Row or Text
+        function extractUdiseCode(rowOrText) {
+            if (typeof rowOrText === 'string') {
+                const match = rowOrText.match(/\d{11}/);
+                return match ? match[0] : '';
+            }
+            for (let k in rowOrText) {
+                const lk = k.toLowerCase().trim();
+                if (lk.includes('udise') || lk.includes('code') || lk.includes('यूडायस')) {
+                    const match = String(rowOrText[k]).match(/\d{11}/);
+                    if (match) return match[0];
                 }
             }
             return '';
@@ -501,15 +532,76 @@
                 return;
             }
 
+            document.getElementById("step3Card").style.display = "block";
+            showStatus("✅ Columns Selected! Step 03 me Font Size & Preview adjust karein.", "#4ade80");
+        }
+
+        function goToStep4() {
             document.getElementById("step4Card").style.display = "block";
-            document.getElementById("step5Card").style.display = "block";
             populateAdminBlockDropdown();
             renderAdminPhotoTable();
             updatePreviewSheet();
-            showStatus("✅ Columns Selected! Step 04 & 06 Ready.", "#4ade80");
         }
 
-        // POPULATE EXACT BLOCK DROPDOWNS FROM EXCEL
+        // STEP 04: BULK PHOTO UPLOAD SYSTEM (MATCH BY UDISE)
+        function handleBulkPhotoUpload(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            let matchedCount = 0;
+            let totalProcessed = 0;
+
+            files.forEach(file => {
+                const fileName = file.name;
+                const udiseInFile = extractUdiseCode(fileName);
+
+                if (udiseInFile) {
+                    // Match with Excel Rows
+                    excelRowsData.forEach((row, idx) => {
+                        const rowUdise = extractUdiseCode(row);
+                        if (rowUdise && rowUdise === udiseInFile) {
+                            if (!rowPhotosMap[idx]) rowPhotosMap[idx] = { photo1: null, photo2: null };
+
+                            const reader = new FileReader();
+                            reader.onload = function(evt) {
+                                // If filename contains (1), _1, (2) etc.
+                                if (fileName.includes('(2)') || fileName.includes('_2') || fileName.includes('-2')) {
+                                    rowPhotosMap[idx].photo2 = evt.target.result;
+                                } else if (fileName.includes('(1)') || fileName.includes('_1') || fileName.includes('-1')) {
+                                    rowPhotosMap[idx].photo1 = evt.target.result;
+                                } else {
+                                    if (!rowPhotosMap[idx].photo1) rowPhotosMap[idx].photo1 = evt.target.result;
+                                    else rowPhotosMap[idx].photo2 = evt.target.result;
+                                }
+
+                                matchedCount++;
+                                totalProcessed++;
+                                if (totalProcessed === files.length) {
+                                    renderAdminPhotoTable();
+                                    document.getElementById("bulkUploadStatus").innerText = `🎉 Successfully Matched & Uploaded ${matchedCount} Photos!`;
+                                }
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                }
+            });
+        }
+
+        // STEP 05: DECISION HANDLER
+        function handleSubEngineerDecision(wantSubEngineers) {
+            if (wantSubEngineers) {
+                document.getElementById("step6Card").style.display = "block";
+                populateBlockDropdowns();
+                showStatus("Step 06: Sub-Engineer Registration Unlocked.", "#38bdf8");
+            } else {
+                document.getElementById("step6Card").style.display = "none";
+                document.getElementById("step7Card").style.display = "none";
+                showStatus("🎉 Process Complete at Admin Level! You can download PPTX/PDF now.", "#4ade80");
+            }
+        }
+
+        // POPULATE BLOCK DROPDOWNS
         function populateBlockDropdowns() {
             let uniqueBlocks = new Set();
             excelRowsData.forEach(r => {
@@ -525,7 +617,7 @@
             });
         }
 
-        // STEP 03: Register Engineers
+        // STEP 06: Register Engineers
         function addSubEngineer() {
             const name = document.getElementById("engName").value.trim().toUpperCase();
             const mobile = document.getElementById("engMobile").value.trim();
@@ -606,20 +698,7 @@
             document.getElementById("pvDetailsFields").style.lineHeight = val;
         }
 
-        function goToStep5() {
-            document.getElementById("step5Card").style.display = "block";
-        }
-
-        function goToStep3() {
-            document.getElementById("step3Card").style.display = "block";
-            populateBlockDropdowns();
-        }
-
-        function goToStep7() {
-            document.getElementById("step7Card").style.display = "block";
-        }
-
-        // STEP 05: Admin Live Table & Preview
+        // STEP 04: Admin Live Table & Preview
         function populateAdminBlockDropdown() {
             const select = document.getElementById("adminBlockSelect");
             select.innerHTML = `<option value="ALL">All Blocks Combined</option>`;
@@ -645,7 +724,7 @@
                 if (filter !== "ALL" && block.toLowerCase().trim() !== filter.toLowerCase().trim()) return;
 
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
-                const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
+                const udise = extractUdiseCode(row) || row['udise_sch_code'] || row['UDISE Code'] || '';
                 const srNo = row['Sr'] || row['Sr. No.'] || (idx + 1);
 
                 if (!rowPhotosMap[idx]) rowPhotosMap[idx] = { photo1: null, photo2: null };
@@ -653,7 +732,7 @@
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${srNo}</strong></td>
-                        <td><strong>${schName}</strong><br><span style="color:#94a3b8; font-size:10px;">${udise}</span></td>
+                        <td><strong>${schName}</strong><br><span style="color:#94a3b8; font-size:10px;">UDISE: ${udise}</span></td>
                         <td><span style="background:#f59e0b; color:#0f172a; padding:2px 6px; border-radius:4px; font-weight:700;">${block}</span></td>
                         <td>
                             <input type="file" accept="image/*" onchange="handleAdminPhotoUpload(event, ${idx}, 'photo1')">
@@ -691,7 +770,7 @@
             const firstRow = excelRowsData[0];
 
             document.getElementById("pvSchName").innerText = firstRow['school_name'] || firstRow['School Name in Hindi'] || 'Sample School';
-            document.getElementById("pvUdise").innerText = "UDISE: " + (firstRow['udise_sch_code'] || firstRow['UDISE Code'] || '123456');
+            document.getElementById("pvUdise").innerText = "UDISE: " + (extractUdiseCode(firstRow) || '123456');
             document.getElementById("pvPanchayat").innerText = "पंचायत: " + (firstRow['Panchayat Name'] || firstRow['ग्राम पंचायत'] || 'Gram Panchayat');
             document.getElementById("pvBlock").innerText = "जनपद: " + (extractBlockName(firstRow) || 'Block');
 
@@ -714,7 +793,7 @@
                 showStatus("✅ Data Loaded Successfully! Mobile Number se Login Karein.", "#4ade80");
             } else {
                 registeredEngineers = JSON.parse(JSON.stringify(DEFAULT_ENGINEERS));
-                showStatus("⚠️ Notice: Link kholne se pehle Admin dwara Step 03 me Save Data package nahi banaya gaya tha.", "#f59e0b");
+                showStatus("⚠️ Notice: Link kholne se pehle Admin dwara Save Data package nahi banaya gaya tha.", "#f59e0b");
             }
         }
 
@@ -740,13 +819,12 @@
             }
         }
 
-        // EXACT MATCH TABLE RENDERER FOR SUB ENGINEERS
         function renderEngineerPhotoUploadTable() {
             const tbody = document.getElementById("engPhotoTableBody");
             tbody.innerHTML = "";
 
             if (excelRowsData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f87171; padding:20px;">Excel Data Package Not Found! Kripya Admin se Step 03 wala Naya Shareable Link maangein.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f87171; padding:20px;">Excel Data Package Not Found! Kripya Admin se Naya Shareable Link maangein.</td></tr>`;
                 return;
             }
 
@@ -756,7 +834,6 @@
                 const rowBlock = extractBlockName(row).toLowerCase().trim();
                 const engBlock = String(currentLoggedInEng.block).toLowerCase().trim();
 
-                // Exact / Contains Match
                 const isMatch = (rowBlock === engBlock) || (rowBlock.includes(engBlock)) || (engBlock.includes(rowBlock)) || (rowBlock === '');
 
                 if (currentLoggedInEng && !isMatch) {
@@ -765,7 +842,7 @@
 
                 renderedCount++;
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
-                const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
+                const udise = extractUdiseCode(row) || '';
                 const srNo = row['Sr'] || row['Sr. No.'] || (idx + 1);
 
                 if (!rowPhotosMap[idx]) rowPhotosMap[idx] = { photo1: null, photo2: null };
@@ -773,7 +850,7 @@
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${srNo}</strong></td>
-                        <td><strong>${schName}</strong><br><span style="color:#94a3b8; font-size:10px;">${udise}</span></td>
+                        <td><strong>${schName}</strong><br><span style="color:#94a3b8; font-size:10px;">UDISE: ${udise}</span></td>
                         <td>
                             <input type="file" accept="image/*" onchange="handleEngineerPhotoUpload(event, ${idx}, 'photo1')">
                             <span id="eng_p1_thumb_${idx}">${rowPhotosMap[idx].photo1 ? `<img src="${rowPhotosMap[idx].photo1}" class="img-thumb">` : ''}</span>
@@ -786,11 +863,10 @@
                 `;
             });
 
-            // GUARANTEED FALLBACK: Render all rows if 0 match
             if (renderedCount === 0 && excelRowsData.length > 0) {
                 excelRowsData.forEach((row, idx) => {
                     const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
-                    const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
+                    const udise = extractUdiseCode(row) || '';
                     const srNo = row['Sr'] || row['Sr. No.'] || (idx + 1);
 
                     if (!rowPhotosMap[idx]) rowPhotosMap[idx] = { photo1: null, photo2: null };
@@ -798,7 +874,7 @@
                     tbody.innerHTML += `
                         <tr>
                             <td><strong>${srNo}</strong></td>
-                            <td><strong>${schName}</strong><br><span style="color:#94a3b8; font-size:10px;">${udise}</span></td>
+                            <td><strong>${schName}</strong><br><span style="color:#94a3b8; font-size:10px;">UDISE: ${udise}</span></td>
                             <td>
                                 <input type="file" accept="image/*" onchange="handleEngineerPhotoUpload(event, ${idx}, 'photo1')">
                                 <span id="eng_p1_thumb_${idx}">${rowPhotosMap[idx].photo1 ? `<img src="${rowPhotosMap[idx].photo1}" class="img-thumb">` : ''}</span>
@@ -841,7 +917,7 @@
                 if (filter !== "ALL" && block.toLowerCase().trim() !== filter.toLowerCase().trim()) return;
 
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'];
-                const udise = row['udise_sch_code'] || row['UDISE Code'];
+                const udise = extractUdiseCode(row);
                 if (!schName && !udise) return;
 
                 let slide = pptx.addSlide();
