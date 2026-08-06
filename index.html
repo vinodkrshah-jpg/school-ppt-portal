@@ -138,6 +138,15 @@
             border-radius: 4px;
             border: 1px solid #38bdf8;
             margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .bulk-upload-box {
+            background-color: #0f172a;
+            border: 1px dashed #38bdf8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
 
         .status-msg {
@@ -158,7 +167,7 @@
 
     <div class="header">
         <h1><i class="fa-solid fa-file-powerpoint"></i> Interactive School PPT Generator</h1>
-        <p>Upload Excel -> Select Columns -> Upload Row-wise Photos -> Download Fully Editable PPTX</p>
+        <p>Upload Excel -> Select Columns -> Upload Bulk / Row-wise Photos -> Download Fully Editable PPTX</p>
     </div>
 
     <!-- STEP 1: UPLOAD EXCEL -->
@@ -180,10 +189,22 @@
         <button class="btn btn-blue" onclick="confirmColumnSelection()"><i class="fa-solid fa-arrow-right"></i> Next: Row-wise Photos &amp; Sheet Selection</button>
     </div>
 
-    <!-- STEP 3: ROW-WISE PHOTO BROWSE & GENERATE -->
+    <!-- STEP 3: ROW-WISE / BULK PHOTO BROWSE & GENERATE -->
     <div class="card" id="step3Card" style="display: none;">
-        <div class="step-title"><i class="fa-solid fa-images"></i> Step 3: Photo Upload (Row-Wise Browse) &amp; PPT Generation</div>
+        <div class="step-title"><i class="fa-solid fa-images"></i> Step 3: Photo Upload (Bulk UDISE Match / Row-Wise Browse) &amp; PPT Generation</div>
         
+        <!-- BULK UDISE PHOTO UPLOAD BOX -->
+        <div class="bulk-upload-box">
+            <div style="font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 5px;">
+                <i class="fa-solid fa-folder-open"></i> Bulk Photo Upload System (By UDISE Code):
+            </div>
+            <p style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">
+                Computer se saari photos ek saath chunen. File name UDISE code hona chahiye (e.g. <code>23500107102.jpg</code>, <code>23500107102(1).jpg</code>, ya <code>23500107102(2).jpg</code>). System auto-match karke sahi row me photo load kar dega.
+            </p>
+            <input type="file" multiple accept="image/*" onchange="handleBulkPhotoUpload(event)" style="font-size: 12px; color: #cbd5e1;">
+            <span id="bulkStatusMsg" style="font-size: 12px; font-weight: 600; color: #4ade80; margin-left: 10px;"></span>
+        </div>
+
         <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
             <label style="font-size: 13px; font-weight: 600;">Active Sheet Select Karein:</label>
             <select id="sheetSelect" onchange="renderRowPhotoTable()" style="padding: 8px 12px; background: #0f172a; color: #fff; border: 1px solid #475569; border-radius: 6px;"></select>
@@ -288,7 +309,74 @@
 
             document.getElementById("step3Card").style.display = "block";
             renderRowPhotoTable();
-            showStatus("✅ Columns Confirmed! Ab aap har Row ke liye Photo Browse upload kar sakte hain.", "#4ade80");
+            showStatus("✅ Columns Confirmed! Ab aap Bulk UDISE Upload ya Row-wise Photo upload kar sakte hain.", "#4ade80");
+        }
+
+        // Helper Function to Extract 11-Digit UDISE Code from Row or Text
+        function extractUdiseCode(objOrText) {
+            if (typeof objOrText === 'string') {
+                const match = objOrText.match(/\d{11}/);
+                return match ? match[0] : '';
+            }
+            for (let k in objOrText) {
+                const lk = k.toLowerCase().trim();
+                if (lk.includes('udise') || lk.includes('code') || lk.includes('यूडायस')) {
+                    const match = String(objOrText[k]).match(/\d{11}/);
+                    if (match) return match[0];
+                }
+            }
+            return '';
+        }
+
+        // BULK PHOTO UPLOAD SYSTEM (MATCH BY UDISE CODE)
+        function handleBulkPhotoUpload(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            let matchedCount = 0;
+            let totalProcessed = 0;
+
+            files.forEach(file => {
+                const fileName = file.name;
+                const udiseInFile = extractUdiseCode(fileName);
+
+                if (udiseInFile) {
+                    // Match with all sheets and rows
+                    loadedWorkbook.SheetNames.forEach(sheetName => {
+                        const ws = loadedWorkbook.Sheets[sheetName];
+                        const rows = XLSX.utils.sheet_to_json(ws);
+
+                        rows.forEach((row, idx) => {
+                            const rowUdise = extractUdiseCode(row);
+                            if (rowUdise && rowUdise === udiseInFile) {
+                                const rowKey = `${sheetName}_${idx}`;
+                                if (!rowPhotosMap[rowKey]) rowPhotosMap[rowKey] = { photo1: null, photo2: null };
+
+                                const reader = new FileReader();
+                                reader.onload = function(evt) {
+                                    // Match (2), _2, -2 for Photo 2, else Photo 1
+                                    if (fileName.includes('(2)') || fileName.includes('_2') || fileName.includes('-2')) {
+                                        rowPhotosMap[rowKey].photo2 = evt.target.result;
+                                    } else if (fileName.includes('(1)') || fileName.includes('_1') || fileName.includes('-1')) {
+                                        rowPhotosMap[rowKey].photo1 = evt.target.result;
+                                    } else {
+                                        if (!rowPhotosMap[rowKey].photo1) rowPhotosMap[rowKey].photo1 = evt.target.result;
+                                        else rowPhotosMap[rowKey].photo2 = evt.target.result;
+                                    }
+
+                                    matchedCount++;
+                                    totalProcessed++;
+                                    if (totalProcessed === files.length) {
+                                        renderRowPhotoTable();
+                                        document.getElementById("bulkStatusMsg").innerText = `🎉 Successfully Matched & Uploaded ${matchedCount} Photos!`;
+                                    }
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    });
+                }
+            });
         }
 
         // Render Table for Row-Wise Photo Uploading
@@ -302,13 +390,15 @@
 
             rows.forEach((row, idx) => {
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'] || `Row ${idx + 1}`;
-                const udise = row['udise_sch_code'] || row['UDISE Code'] || '';
+                const udise = extractUdiseCode(row) || row['udise_sch_code'] || row['UDISE Code'] || '';
                 const srNo = row['Sr'] || row['Sr. No.'] || (idx + 1);
 
                 const rowKey = `${sheetName}_${idx}`;
                 if (!rowPhotosMap[rowKey]) {
                     rowPhotosMap[rowKey] = { photo1: null, photo2: null };
                 }
+
+                const photos = rowPhotosMap[rowKey];
 
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
@@ -319,11 +409,11 @@
                     </td>
                     <td>
                         <input type="file" accept="image/*" onchange="handleRowPhotoUpload(event, '${rowKey}', 'photo1')">
-                        <span id="p1_preview_${rowKey}"></span>
+                        <span id="p1_preview_${rowKey}">${photos.photo1 ? `<img src="${photos.photo1}" class="img-preview">` : ''}</span>
                     </td>
                     <td>
                         <input type="file" accept="image/*" onchange="handleRowPhotoUpload(event, '${rowKey}', 'photo2')">
-                        <span id="p2_preview_${rowKey}"></span>
+                        <span id="p2_preview_${rowKey}">${photos.photo2 ? `<img src="${photos.photo2}" class="img-preview">` : ''}</span>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -367,7 +457,7 @@
 
             rows.forEach((row, idx) => {
                 const schName = row['school_name'] || row['School Name in Hindi'] || row['School Name'];
-                const udise = row['udise_sch_code'] || row['UDISE Code'];
+                const udise = extractUdiseCode(row) || row['udise_sch_code'] || row['UDISE Code'];
                 const srNo = row['Sr'] || row['Sr. No.'] || (idx + 1);
 
                 if (!schName && !udise) return;
